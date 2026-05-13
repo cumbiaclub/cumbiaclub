@@ -1,0 +1,2404 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>TELEPROMPTER</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111;
+    --surface2: #1a1a1a;
+    --surface3: #222;
+    --border: #2a2a2a;
+    --accent: #00e5ff;
+    --accent2: #ff4d00;
+    --text: #f0f0f0;
+    --text2: #888;
+    --text3: #555;
+    --green: #00ff88;
+    --red: #ff3b3b;
+    --blue: #4da6ff;
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-ui: 'Inter', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-ui);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    user-select: none;
+  }
+
+  /* ═══════════════════════════════════════
+     LAYOUT PRINCIPAL
+  ═══════════════════════════════════════ */
+
+  #app { width: 100%; height: 100vh; position: relative; }
+
+  .screen {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+  }
+  .screen.active { display: flex; }
+
+  /* ═══════════════════════════════════════
+     HEADER COMÚN
+  ═══════════════════════════════════════ */
+
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: clamp(12px, 1.5vh, 18px) clamp(16px, 3vw, 40px);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .header-logo {
+    font-family: var(--font-display);
+    font-size: 22px;
+    letter-spacing: 3px;
+    color: var(--accent);
+  }
+
+  .header-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text2);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .header-spacer { flex: 1; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.3px;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text2);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { background: var(--surface2); color: var(--text); border-color: #444; }
+
+  .btn-accent {
+    background: var(--accent);
+    color: #000;
+    font-weight: 600;
+  }
+  .btn-accent:hover { background: #00cce6; transform: translateY(-1px); }
+
+  .btn-danger {
+    background: transparent;
+    color: var(--red);
+    border: 1px solid rgba(255,59,59,0.3);
+  }
+  .btn-danger:hover { background: rgba(255,59,59,0.1); }
+
+  .btn-icon {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    justify-content: center;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text2);
+    border: 1px solid var(--border);
+    font-size: 16px;
+  }
+  .btn-icon:hover { background: var(--surface2); color: var(--text); }
+
+  /* ═══════════════════════════════════════
+     PANTALLA INICIO
+  ═══════════════════════════════════════ */
+
+  #screen-home {
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+    background: var(--bg);
+  }
+
+  .home-logo {
+    font-family: var(--font-display);
+    font-size: clamp(60px, 12vw, 120px);
+    letter-spacing: 8px;
+    color: var(--accent);
+    line-height: 1;
+    text-align: center;
+  }
+
+  .home-sub {
+    font-size: 12px;
+    letter-spacing: 4px;
+    color: var(--text3);
+    text-align: center;
+    margin-top: 8px;
+    text-transform: uppercase;
+  }
+
+  .home-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 48px;
+    padding: 0 20px;
+    max-width: 820px;
+    width: 100%;
+  }
+
+  .home-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: clamp(24px, 3vw, 40px) clamp(20px, 2.5vw, 36px);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .home-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+    background: var(--surface2);
+    box-shadow: 0 8px 32px rgba(0,229,255,0.08);
+  }
+
+  .home-card-icon {
+    font-size: clamp(28px, 3vw, 40px);
+    line-height: 1;
+  }
+
+  .home-card-title {
+    font-size: clamp(15px, 1.4vw, 18px);
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .home-card-desc {
+    font-size: clamp(12px, 1vw, 14px);
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  .home-bottom {
+    display: flex;
+    gap: 12px;
+    margin-top: 32px;
+    padding: 0 20px;
+    max-width: 820px;
+    width: 100%;
+  }
+  .home-bottom .btn { font-size: clamp(13px, 1vw, 15px); padding: 10px 20px; }
+
+  /* ═══════════════════════════════════════
+     PANTALLA BIBLIOTECA
+  ═══════════════════════════════════════ */
+
+  #screen-library { background: var(--bg); }
+
+  .library-toolbar {
+    display: flex;
+    gap: 10px;
+    padding: 14px 20px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+
+  .search-box {
+    flex: 1;
+    min-width: 200px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0 14px;
+  }
+  .search-box input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: var(--font-ui);
+    font-size: 14px;
+    padding: 9px 0;
+  }
+  .search-box input::placeholder { color: var(--text3); }
+
+  .song-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: clamp(8px, 1.2vw, 20px);
+  }
+
+  .song-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: clamp(12px, 1.4vh, 18px) 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.1s;
+    border-bottom: 1px solid transparent;
+  }
+
+  .song-item:hover { background: var(--surface); }
+  .song-item.selected { background: var(--surface2); border-color: var(--border); }
+
+  .song-num {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text3);
+    width: 24px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .song-info { flex: 1; min-width: 0; }
+  .song-title {
+    font-size: clamp(14px, 1.2vw, 17px);
+    font-weight: 500;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .song-artist {
+    font-size: clamp(11px, 0.9vw, 13px);
+    color: var(--text2);
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .song-actions {
+    display: flex;
+    gap: 6px;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .song-item:hover .song-actions { opacity: 1; }
+  @media (hover: hover) {
+    .song-item:not(:hover) .song-actions { opacity: 0; }
+  }
+
+  .song-badge {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: rgba(0,255,136,0.1);
+    color: var(--green);
+    border: 1px solid rgba(0,255,136,0.2);
+    flex-shrink: 0;
+  }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 60px 20px;
+    color: var(--text3);
+    text-align: center;
+  }
+  .empty-state .icon { font-size: 40px; opacity: 0.4; }
+  .empty-state p { font-size: 14px; line-height: 1.6; }
+
+  /* ═══════════════════════════════════════
+     MODAL: AGREGAR CANCIÓN
+  ═══════════════════════════════════════ */
+
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: clamp(24px, 2.5vw, 40px);
+    width: 100%;
+    max-width: clamp(500px, 50vw, 680px);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label { font-size: 12px; color: var(--text2); letter-spacing: 0.5px; text-transform: uppercase; }
+  .field input, .field textarea {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: var(--font-ui);
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .field input:focus, .field textarea:focus { border-color: var(--accent); }
+  .field textarea {
+    resize: vertical;
+    min-height: clamp(200px, 28vh, 340px);
+    font-family: var(--font-mono);
+    font-size: clamp(12px, 1vw, 14px);
+    line-height: 1.7;
+  }
+
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+
+  .ai-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: var(--surface2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--text2);
+    border: 1px solid var(--border);
+  }
+  .ai-status .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--text3);
+    flex-shrink: 0;
+    transition: background 0.3s;
+  }
+  .ai-status.loading .dot { background: var(--accent); animation: pulse 1s infinite; }
+  .ai-status.success .dot { background: var(--green); }
+  .ai-status.error .dot { background: var(--red); }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* ═══════════════════════════════════════
+     MODAL: EDITAR CANCIÓN
+  ═══════════════════════════════════════ */
+
+  .editor-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    background: var(--surface2);
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+  .tab {
+    flex: 1;
+    padding: 7px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: var(--text2);
+    border: none;
+    background: none;
+    font-family: var(--font-ui);
+  }
+  .tab.active { background: var(--surface); color: var(--text); }
+
+  /* ═══════════════════════════════════════
+     PANTALLA SETLIST
+  ═══════════════════════════════════════ */
+
+  #screen-setlist { background: var(--bg); }
+
+  .setlist-body {
+    flex: 1;
+    display: flex;
+    gap: 0;
+    overflow: hidden;
+  }
+
+  .setlist-songs {
+    width: clamp(280px, 28vw, 420px);
+    flex-shrink: 0;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .panel-header {
+    padding: 14px 16px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text3);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .panel-header span { flex: 1; }
+  .badge {
+    background: var(--surface2);
+    color: var(--text2);
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-family: var(--font-mono);
+  }
+
+  .setlist-order {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+  }
+
+  .setlist-entry {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: clamp(10px, 1.2vh, 16px) 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.1s;
+    position: relative;
+  }
+  .setlist-entry:hover { background: var(--surface); }
+  .setlist-entry.active-song {
+    background: rgba(232,255,0,0.08);
+    border: 1px solid rgba(232,255,0,0.2);
+  }
+
+  .setlist-entry .pos {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text3);
+    width: 20px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .setlist-entry .s-title {
+    flex: 1;
+    font-size: clamp(14px, 1.2vw, 16px);
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .setlist-entry .s-artist {
+    font-size: 11px;
+    color: var(--text2);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .setlist-entry .remove-btn {
+    opacity: 0;
+    background: none;
+    border: none;
+    color: var(--text3);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px 4px;
+    border-radius: 4px;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .setlist-entry:hover .remove-btn { opacity: 1; }
+  .setlist-entry .remove-btn:hover { color: var(--red); }
+
+  .setlist-entry .play-hint {
+    opacity: 0;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.5px;
+    transition: opacity 0.15s;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .setlist-entry:hover .play-hint { opacity: 1; }
+  .setlist-entry:hover .remove-btn { opacity: 1; }
+
+  .drag-handle {
+    color: var(--text3);
+    font-size: 16px;
+    cursor: grab;
+    padding: 0 2px;
+    flex-shrink: 0;
+    user-select: none;
+  }
+  .drag-handle:active { cursor: grabbing; }
+
+  .setlist-entry.drag-over {
+    border-top: 2px solid var(--accent);
+    background: rgba(0,229,255,0.05);
+  }
+
+  .setlist-picker {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .drag-indicator {
+    position: absolute;
+    left: 0;
+    width: 3px;
+    top: 4px;
+    bottom: 4px;
+    border-radius: 2px;
+    background: var(--accent);
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .setlist-entry.active-song .drag-indicator { opacity: 1; }
+
+  /* ═══════════════════════════════════════
+     PANTALLA SHOW (TELEPROMPTER)
+  ═══════════════════════════════════════ */
+
+  #screen-show {
+    background: #000;
+    position: fixed !important;
+    inset: 0 !important;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 100;
+  }
+  #screen-show.active { display: flex; }
+
+  .show-header {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: clamp(10px, 1.5vh, 16px) clamp(16px, 3vw, 40px);
+    background: rgba(0,0,0,0.95);
+    border-bottom: 1px solid #1a1a1a;
+    z-index: 10;
+  }
+
+  .song-counter {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text3);
+  }
+
+  .current-song-name {
+    font-family: var(--font-display);
+    font-size: clamp(18px, 2vw, 28px);
+    letter-spacing: 2px;
+    color: var(--accent);
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .show-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .speed-control { display: none; }
+  .play-btn { display: none; }
+
+  .font-control {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 4px 8px;
+  }
+  .font-control label { font-size: 11px; color: var(--text3); }
+  .font-val {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text2);
+    width: 28px;
+  }
+
+  .play-btn {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .play-btn:hover { background: #00cce6; transform: scale(1.05); }
+  .play-btn.playing { background: var(--surface2); color: var(--accent); border: 1px solid var(--accent); }
+
+  .teleprompter-scroll {
+    flex: 1;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    min-height: 0;
+    -webkit-overflow-scrolling: touch;
+  }
+  .teleprompter-scroll::-webkit-scrollbar { width: 4px; }
+  .teleprompter-scroll::-webkit-scrollbar-track { background: transparent; }
+  .teleprompter-scroll::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+
+  .teleprompter-content {
+    padding: clamp(20px, 4vw, 60px) clamp(40px, 8vw, 140px);
+    padding-bottom: 60vh;
+    min-height: 101%;
+    text-align: center;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .song-block {
+    margin-bottom: 0;
+  }
+
+  .song-separator {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 32px 0 24px;
+    opacity: 0.4;
+  }
+  .song-separator .sep-line { flex: 1; height: 1px; background: #333; }
+  .song-separator .sep-name {
+    font-family: var(--font-display);
+    font-size: 14px;
+    letter-spacing: 3px;
+    color: #555;
+  }
+
+  .lyrics-line {
+    font-size: var(--lyrics-size, 36px);
+    line-height: 1.5;
+    color: #fff;
+    white-space: pre-wrap;
+    font-family: var(--font-ui);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: font-size 0.2s;
+  }
+
+  .lyrics-line.section-tag {
+    font-size: calc(var(--lyrics-size, 36px) * 0.55);
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-family: var(--font-display);
+    margin: 20px 0 8px;
+    opacity: 0.8;
+  }
+
+  .lyrics-line.empty { height: calc(var(--lyrics-size, 36px) * 0.8); }
+
+  /* Modo espejo */
+  .mirror-mode .teleprompter-content {
+    transform: scaleX(-1);
+  }
+  .mirror-mode .show-header {
+    transform: scaleX(-1);
+  }
+
+  /* Footer navegación */
+  .show-footer {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px 20px;
+    background: rgba(0,0,0,0.95);
+    border-top: 1px solid #1a1a1a;
+    z-index: 10;
+  }
+
+  .nav-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    padding: clamp(10px, 1.5vh, 16px) clamp(20px, 3vw, 48px);
+    font-family: var(--font-ui);
+    font-size: clamp(13px, 1.1vw, 16px);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: 0.3px;
+  }
+  .nav-btn:hover { background: var(--surface3); }
+  .nav-btn.next-song {
+    background: rgba(0,229,255,0.1);
+    border-color: rgba(0,229,255,0.3);
+    color: var(--accent);
+  }
+  .nav-btn.next-song:hover { background: rgba(0,229,255,0.18); }
+
+  /* ═══════════════════════════════════════
+     PANTALLA ABLESET
+  ═══════════════════════════════════════ */
+
+  #screen-ableset { background: var(--bg); }
+
+  .ableset-body {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 24px;
+    padding: 40px;
+  }
+
+  .connection-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    border-radius: 10px;
+    background: var(--surface2);
+  }
+
+  .status-dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--text3);
+    flex-shrink: 0;
+  }
+  .status-dot.connected { background: var(--green); box-shadow: 0 0 8px rgba(0,255,136,0.4); animation: pulse 2s infinite; }
+  .status-dot.connecting { background: var(--accent); animation: pulse 0.8s infinite; }
+  .status-dot.error { background: var(--red); }
+
+  .status-text { flex: 1; }
+  .status-label { font-size: 13px; font-weight: 500; color: var(--text); }
+  .status-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+  .ableset-current {
+    text-align: center;
+    padding: 24px;
+    background: var(--surface2);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+  .ableset-current .label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); margin-bottom: 12px; }
+  .ableset-current .name {
+    font-family: var(--font-display);
+    font-size: 32px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    min-height: 40px;
+  }
+  .ableset-current .artist { font-size: 13px; color: var(--text2); margin-top: 6px; }
+
+  /* ═══════════════════════════════════════
+     PANTALLA CONFIGURACIÓN
+  ═══════════════════════════════════════ */
+
+  #screen-config { background: var(--bg); }
+
+  .config-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 20px;
+  }
+
+  .config-section {
+    max-width: clamp(580px, 70vw, 800px);
+    margin: 0 auto 32px;
+  }
+
+  .config-section-title {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .config-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .config-row:last-child { border-bottom: none; }
+
+  .config-row-info { flex: 1; }
+  .config-row-label { font-size: 14px; color: var(--text); font-weight: 500; }
+  .config-row-desc { font-size: 12px; color: var(--text2); margin-top: 3px; line-height: 1.4; }
+
+  .config-row input {
+    width: clamp(220px, 25vw, 320px);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 14px;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.15s;
+    flex-shrink: 0;
+  }
+  .config-row input:focus { border-color: var(--accent); }
+
+  .toggle {
+    width: 44px; height: 24px;
+    background: var(--surface3);
+    border-radius: 12px;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.2s;
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .toggle::after {
+    content: '';
+    position: absolute;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--text3);
+    top: 2px; left: 2px;
+    transition: all 0.2s;
+  }
+  .toggle.on { background: rgba(232,255,0,0.2); border-color: var(--accent); }
+  .toggle.on::after { left: 22px; background: var(--accent); }
+
+  .info-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+  .info-box code {
+    font-family: var(--font-mono);
+    background: var(--surface3);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: var(--accent);
+  }
+  .info-box .copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    padding: 6px 12px;
+    background: var(--surface3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text2);
+    font-size: 12px;
+    cursor: pointer;
+    font-family: var(--font-ui);
+    transition: all 0.15s;
+  }
+  .info-box .copy-btn:hover { border-color: var(--accent); color: var(--text); }
+
+  /* ═══════════════════════════════════════
+     TOAST
+  ═══════════════════════════════════════ */
+
+  #toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 13px;
+    color: var(--text);
+    z-index: 9999;
+    transition: transform 0.3s ease;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  #toast.show { transform: translateX(-50%) translateY(0); }
+  #toast.success { border-color: var(--green); color: var(--green); }
+  #toast.error { border-color: var(--red); color: var(--red); }
+
+  /* ═══════════════════════════════════════
+     SCROLLBAR GLOBAL
+  ═══════════════════════════════════════ */
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #3a3a3a; }
+
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ═══════════════ INICIO ═══════════════ -->
+  <div id="screen-home" class="screen active">
+    <div class="home-logo">PROMPT</div>
+    <div class="home-sub">CUMBIA CLUB</div>
+    <div class="home-cards">
+      <div class="home-card" onclick="goto('screen-setlist')">
+        <div class="home-card-icon">📋</div>
+        <div class="home-card-title">Modo Setlist</div>
+        <div class="home-card-desc">Armá la lista antes del show, navegá manualmente entre temas</div>
+      </div>
+      <div class="home-card" onclick="goto('screen-ableset')">
+        <div class="home-card-icon">🔗</div>
+        <div class="home-card-title">Modo Ableset</div>
+        <div class="home-card-desc">Conectado a Ableton vía WiFi. Cambio automático de tema</div>
+      </div>
+    </div>
+    <div class="home-bottom">
+      <button class="btn btn-ghost" onclick="goto('screen-library')" style="flex:1">🎵 Biblioteca</button>
+      <button class="btn btn-ghost" onclick="goto('screen-config')" style="flex:1">⚙️ Configuración</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════ BIBLIOTECA ═══════════════ -->
+  <div id="screen-library" class="screen">
+    <div class="header">
+      <button class="btn btn-ghost" onclick="goto('screen-home')">← Volver</button>
+      <div class="header-logo" style="font-size:16px">BIBLIOTECA</div>
+      <div class="header-spacer"></div>
+      <button class="btn btn-accent" onclick="openAddModal()">+ Agregar tema</button>
+    </div>
+    <div class="library-toolbar">
+      <div class="search-box">
+        <span style="color:var(--text3)">🔍</span>
+        <input type="text" id="search-input" placeholder="Buscar por título o artista..." oninput="renderLibrary()">
+      </div>
+      <button class="btn btn-ghost" onclick="exportDB()">⬇ Exportar</button>
+      <label class="btn btn-ghost" style="cursor:pointer">
+        ⬆ Importar
+        <input type="file" accept=".json" onchange="importDB(event)" style="display:none">
+      </label>
+    </div>
+    <div class="song-list" id="song-list"></div>
+  </div>
+
+  <!-- ═══════════════ SETLIST ═══════════════ -->
+  <div id="screen-setlist" class="screen">
+    <div class="header">
+      <button class="btn btn-ghost" onclick="goto('screen-home')">← Volver</button>
+      <div class="header-logo" style="font-size:16px">SETLIST</div>
+      <div class="header-spacer"></div>
+      <button class="btn btn-ghost" onclick="clearSetlist()">🗑 Vaciar</button>
+      <button class="btn btn-accent" id="start-show-btn" onclick="startShow('manual')" disabled>▶ Iniciar Show</button>
+    </div>
+    <div class="setlist-body">
+      <div class="setlist-songs">
+        <div class="panel-header">
+          <span>SETLIST</span>
+          <span class="badge" id="setlist-count">0</span>
+        </div>
+        <div class="setlist-order" id="setlist-order"></div>
+      </div>
+      <div class="setlist-picker">
+        <div class="panel-header"><span>BIBLIOTECA — Arrastrá temas al setlist</span></div>
+        <div class="song-list" id="picker-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ SHOW / TELEPROMPTER ═══════════════ -->
+  <div id="screen-show" class="screen">
+    <div class="show-header" id="show-header">
+      <div class="song-counter" id="show-counter">1/1</div>
+      <div class="current-song-name" id="show-song-name">—</div>
+      <div class="show-controls">
+        <div class="font-control">
+          <label>A</label>
+          <button class="btn-icon" style="border:none;background:none;color:var(--text2);cursor:pointer;font-size:16px;width:24px;height:24px;display:flex;align-items:center;justify-content:center" onclick="changeFontSize(-4)">−</button>
+          <span class="font-val" id="font-val">36</span>
+          <button class="btn-icon" style="border:none;background:none;color:var(--text2);cursor:pointer;font-size:16px;width:24px;height:24px;display:flex;align-items:center;justify-content:center" onclick="changeFontSize(4)">+</button>
+        </div>
+        <button class="btn-icon" id="mirror-btn" onclick="toggleMirror()" title="Modo espejo">⇆</button>
+        <button class="btn btn-ghost" onclick="exitShow()" style="padding:8px 12px">✕</button>
+      </div>
+    </div>
+
+    <div class="teleprompter-scroll" id="teleprompter-scroll">
+      <div class="teleprompter-content" id="teleprompter-content"></div>
+    </div>
+
+    <div class="show-footer" id="show-footer">
+      <button class="nav-btn" onclick="prevSong()">← Anterior</button>
+      <button class="nav-btn" onclick="scrollToTop()">⬆ Inicio</button>
+      <button class="nav-btn next-song" onclick="nextSong()">Siguiente →</button>
+    </div>
+  </div>
+
+  <!-- ═══════════════ ABLESET ═══════════════ -->
+  <div id="screen-ableset" class="screen">
+    <div class="header">
+      <button class="btn btn-ghost" onclick="goto('screen-home')">← Volver</button>
+      <div class="header-logo" style="font-size:16px">ABLESET</div>
+      <div class="header-spacer"></div>
+      <button class="btn btn-ghost" onclick="goto('screen-config')">⚙️ Config</button>
+    </div>
+    <div class="ableset-body">
+      <div class="connection-card">
+        <div class="status-indicator" id="ableset-status">
+          <div class="status-dot" id="ableset-dot"></div>
+          <div class="status-text">
+            <div class="status-label" id="ableset-status-label">Desconectado</div>
+            <div class="status-sub" id="ableset-status-sub">Configura la IP del servidor y reconecta</div>
+          </div>
+          <button class="btn btn-ghost" id="ableset-connect-btn" onclick="toggleAblesetConnection()" style="padding:6px 14px;font-size:12px">Conectar</button>
+        </div>
+
+        <div class="ableset-current">
+          <div class="label">TEMA ACTUAL EN ABLETON</div>
+          <div class="name" id="ableset-song-name">—</div>
+          <div class="artist" id="ableset-song-artist"></div>
+        </div>
+
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-ghost" style="flex:1" onclick="goto('screen-library')">🎵 Biblioteca</button>
+          <button class="btn btn-accent" style="flex:1" id="ableset-show-btn" onclick="startShow('ableset')" disabled>▶ Ver teleprompter</button>
+        </div>
+      </div>
+
+      <div class="info-box" style="max-width:500px;width:100%">
+        <strong style="color:var(--text)">Cómo funciona</strong><br>
+        1. La PC crea un hotspot WiFi propio<br>
+        2. Esta app se conecta a <code id="ableset-ip-display">192.168.137.1:3001</code><br>
+        3. El servidor Node.js envía el tema actual en tiempo real<br>
+        4. Al cambiar de tema en Ableton, el teleprompter carga la letra y resetea el scroll
+        <br><br>
+        <button class="copy-btn" onclick="copyNodeScript()">📋 Copiar script Node.js para la PC</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ CONFIGURACIÓN ═══════════════ -->
+  <div id="screen-config" class="screen">
+    <div class="header">
+      <button class="btn btn-ghost" onclick="goto('screen-home')">← Volver</button>
+      <div class="header-logo" style="font-size:16px">CONFIGURACIÓN</div>
+      <div class="header-spacer"></div>
+      <button class="btn btn-accent" onclick="saveConfig()">Guardar</button>
+    </div>
+    <div class="config-body">
+      <div class="config-section">
+        <div class="config-section-title">Inteligencia Artificial</div>
+        <div class="config-row">
+          <div class="config-row-info">
+            <div class="config-row-label">API Key de Anthropic</div>
+            <div class="config-row-desc">Se guarda solo en este dispositivo. Se usa para buscar y formatear letras.</div>
+          </div>
+          <input type="password" id="cfg-apikey" placeholder="sk-ant-api03-...">
+        </div>
+      </div>
+
+      <div class="config-section">
+        <div class="config-section-title">Conexión Ableset</div>
+        <div class="config-row">
+          <div class="config-row-info">
+            <div class="config-row-label">IP del servidor</div>
+            <div class="config-row-desc">IP de la PC en el hotspot. Por defecto es 192.168.137.1 en Windows.</div>
+          </div>
+          <input type="text" id="cfg-server-ip" placeholder="192.168.137.1">
+        </div>
+        <div class="config-row">
+          <div class="config-row-info">
+            <div class="config-row-label">Puerto</div>
+            <div class="config-row-desc">Puerto del servidor Node.js.</div>
+          </div>
+          <input type="text" id="cfg-server-port" placeholder="3001">
+        </div>
+      </div>
+
+      <div class="config-section">
+        <div class="config-section-title">Script Node.js para la PC</div>
+        <div class="info-box">
+          <strong style="color:var(--text)">Instalación (una sola vez)</strong><br>
+          1. Instalá <a href="https://nodejs.org" style="color:var(--accent)">Node.js</a> en la PC<br>
+          2. Copiá el script y guardalo como <code>teleprompter-server.js</code><br>
+          3. Abrí una terminal y ejecutá: <code>node teleprompter-server.js</code><br>
+          4. Dejalo corriendo durante el show<br><br>
+          <button class="copy-btn" onclick="copyNodeScript()">📋 Copiar script</button>
+        </div>
+      </div>
+
+      <div class="config-section">
+        <div class="config-section-title">Datos</div>
+        <div class="config-row">
+          <div class="config-row-info">
+            <div class="config-row-label">Exportar biblioteca</div>
+            <div class="config-row-desc">Backup de todas las canciones y letras.</div>
+          </div>
+          <button class="btn btn-ghost" onclick="exportDB()">⬇ Exportar JSON</button>
+        </div>
+        <div class="config-row">
+          <div class="config-row-info">
+            <div class="config-row-label">Importar biblioteca</div>
+            <div class="config-row-desc">Restaurar desde backup.</div>
+          </div>
+          <label class="btn btn-ghost" style="cursor:pointer">
+            ⬆ Importar JSON
+            <input type="file" accept=".json" onchange="importDB(event)" style="display:none">
+          </label>
+        </div>
+        <div class="config-row">
+          <div class="config-row-info">
+            <div class="config-row-label">Borrar toda la biblioteca</div>
+            <div class="config-row-desc">Elimina todas las canciones. No se puede deshacer.</div>
+          </div>
+          <button class="btn btn-danger" onclick="clearAllSongs()">🗑 Borrar todo</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════ MODALES ═══════════════ -->
+
+<!-- Modal: Agregar canción -->
+<div class="modal-overlay" id="modal-add">
+  <div class="modal">
+    <div class="modal-title">Agregar tema</div>
+    <div class="field">
+      <label>Título de la canción *</label>
+      <input type="text" id="add-title" placeholder="ej: Bohemian Rhapsody">
+    </div>
+    <div class="field">
+      <label>Artista</label>
+      <input type="text" id="add-artist" placeholder="ej: Queen">
+    </div>
+    <div class="ai-status" id="ai-status">
+      <div class="dot"></div>
+      <span id="ai-status-text">La IA buscará y formateará la letra automáticamente</span>
+    </div>
+    <div class="field" id="lyrics-field">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px">
+        <label style="margin-bottom:0">Letra</label>
+        <button class="btn btn-ghost" id="format-lyrics-btn" onclick="formatLyricsManual()" style="padding:4px 10px;font-size:11px;opacity:0.7" title="Formatea automáticamente la letra que pegaste">✨ Formatear con IA</button>
+      </div>
+      <textarea id="add-lyrics" placeholder="Pegá la letra aquí sin formato, o dejalo vacío para que la IA la busque sola..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeAddModal()">Cancelar</button>
+      <button class="btn btn-ghost" id="fetch-lyrics-btn" onclick="fetchLyricsAI()">🤖 Buscar letra con IA</button>
+      <button class="btn btn-accent" onclick="saveSong()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Editar canción -->
+<div class="modal-overlay" id="modal-edit">
+  <div class="modal" style="max-width:700px;max-height:90vh;overflow-y:auto">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="modal-title" style="flex:1">Editar tema</div>
+      <button class="btn btn-danger" onclick="deleteSong()">🗑 Eliminar</button>
+    </div>
+    <div class="field">
+      <label>Título *</label>
+      <input type="text" id="edit-title">
+    </div>
+    <div class="field">
+      <label>Artista</label>
+      <input type="text" id="edit-artist">
+    </div>
+    <div class="editor-tabs">
+      <button class="tab active" onclick="switchEditorTab('lyrics')">Letra</button>
+      <button class="tab" onclick="switchEditorTab('preview')">Vista previa</button>
+      <button class="tab" onclick="switchEditorTab('help')">Ayuda formato</button>
+    </div>
+    <div id="editor-lyrics" class="field">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:4px">
+        <button class="btn btn-ghost" onclick="formatLyricsEdit()" style="padding:4px 10px;font-size:11px;opacity:0.7" title="Formatea automáticamente la letra que pegaste">✨ Formatear con IA</button>
+      </div>
+      <textarea id="edit-lyrics" style="min-height:300px"></textarea>
+    </div>
+    <div id="editor-preview" style="display:none;background:var(--surface2);border-radius:8px;padding:16px;max-height:300px;overflow-y:auto"></div>
+    <div id="editor-help" style="display:none">
+      <div class="info-box">
+        <strong style="color:var(--text)">Marcadores de sección</strong><br>
+        Usá corchetes para marcar secciones:<br><br>
+        <code>[INTRO]</code> <code>[VERSO 1]</code> <code>[CORO]</code> <code>[PUENTE]</code> <code>[OUTRO]</code><br><br>
+        Estos se muestran en el teleprompter resaltados en amarillo.<br>
+        Línea vacía entre estrofas = espacio visual en el scroll.
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeEditModal()">Cancelar</button>
+      <button class="btn btn-ghost" onclick="refetchLyrics()">🤖 Re-buscar con IA</button>
+      <button class="btn btn-accent" onclick="updateSong()">Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// ESTADO Y BASE DE DATOS
+// ═══════════════════════════════════════════════════════════════
+
+let db = { songs: [] };
+let config = {
+  apiKey: '',
+  serverIP: '192.168.137.1',
+  serverPort: '3001',
+};
+let setlist = []; // array de song IDs en orden
+let currentSongIndex = 0; // índice en el setlist durante el show
+let showMode = 'manual'; // 'manual' | 'ableset'
+
+// Teleprompter state
+let autoScrolling = false;
+let scrollSpeed = 1.2;
+let fontSize = 36;
+let scrollInterval = null;
+let uiVisible = true;
+let uiTimeout = null;
+let mirrorMode = false;
+
+// Ableset state
+let ablesetWS = null;
+let ablesetConnected = false;
+let currentAblesetSong = null;
+
+// ═══════════════════════════════════════════════════════════════
+// PERSISTENCIA
+// ═══════════════════════════════════════════════════════════════
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem('tp_db');
+    if (raw) db = JSON.parse(raw);
+    if (!db.songs) db.songs = [];
+  } catch(e) { db = { songs: [] }; }
+
+  try {
+    const cfg = localStorage.getItem('tp_config');
+    if (cfg) config = { ...config, ...JSON.parse(cfg) };
+  } catch(e) {}
+
+  try {
+    const sl = localStorage.getItem('tp_setlist');
+    if (sl) setlist = JSON.parse(sl);
+  } catch(e) {}
+
+  applyConfig();
+}
+
+function saveData() {
+  localStorage.setItem('tp_db', JSON.stringify(db));
+}
+
+function saveConfigData() {
+  localStorage.setItem('tp_config', JSON.stringify(config));
+}
+
+function saveSetlist() {
+  localStorage.setItem('tp_setlist', JSON.stringify(setlist));
+}
+
+function applyConfig() {
+  if (config.apiKey) document.getElementById('cfg-apikey').value = config.apiKey;
+  document.getElementById('cfg-server-ip').value = config.serverIP;
+  document.getElementById('cfg-server-port').value = config.serverPort;
+  document.getElementById('ableset-ip-display').textContent = `${config.serverIP}:${config.serverPort}`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// NAVEGACIÓN
+// ═══════════════════════════════════════════════════════════════
+
+function goto(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(screenId).classList.add('active');
+
+  if (screenId === 'screen-library') renderLibrary();
+  if (screenId === 'screen-setlist') { renderLibrary(); renderSetlist(); }
+  if (screenId === 'screen-config') applyConfig();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// BIBLIOTECA
+// ═══════════════════════════════════════════════════════════════
+
+function renderLibrary() {
+  const q = (document.getElementById('search-input')?.value || '').toLowerCase();
+  const songs = db.songs.filter(s =>
+    s.title.toLowerCase().includes(q) || (s.artist || '').toLowerCase().includes(q)
+  );
+
+  const list = document.getElementById('song-list');
+  if (!list) return;
+
+  if (songs.length === 0) {
+    list.innerHTML = `<div class="empty-state">
+      <div class="icon">🎵</div>
+      <p>${db.songs.length === 0 ? 'No hay canciones todavía.<br>Hacé clic en <strong>+ Agregar tema</strong> para empezar.' : 'No hay resultados para tu búsqueda.'}</p>
+    </div>`;
+    return;
+  }
+
+  list.innerHTML = songs.map((s, i) => `
+    <div class="song-item" ondblclick="openEditModal('${s.id}')">
+      <div class="song-num">${i+1}</div>
+      <div class="song-info">
+        <div class="song-title">${esc(s.title)}</div>
+        <div class="song-artist">${esc(s.artist || 'Artista desconocido')}</div>
+      </div>
+      ${s.lyrics ? '<span class="song-badge">✓ letra</span>' : ''}
+      <div class="song-actions">
+        <button class="btn btn-ghost" style="padding:6px 12px;font-size:12px" onclick="openEditModal('${s.id}')">Editar</button>
+      </div>
+    </div>
+  `).join('');
+
+  // También actualizar el picker del setlist si está visible
+  renderPickerList(q);
+}
+
+function renderPickerList(q = '') {
+  const picker = document.getElementById('picker-list');
+  if (!picker) return;
+
+  const songs = db.songs.filter(s =>
+    s.title.toLowerCase().includes(q) || (s.artist || '').toLowerCase().includes(q)
+  );
+
+  if (songs.length === 0) {
+    picker.innerHTML = `<div class="empty-state"><div class="icon">🎵</div><p>No hay canciones en la biblioteca</p></div>`;
+    return;
+  }
+
+  picker.innerHTML = songs.map(s => `
+    <div class="song-item" onclick="addToSetlist('${s.id}')">
+      <div class="song-info">
+        <div class="song-title">${esc(s.title)}</div>
+        <div class="song-artist">${esc(s.artist || '')}</div>
+      </div>
+      <button class="btn btn-ghost" style="padding:6px 12px;font-size:12px">+ Agregar</button>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SETLIST
+// ═══════════════════════════════════════════════════════════════
+
+let dragSrcIdx = null;
+
+function renderSetlist() {
+  const order = document.getElementById('setlist-order');
+  const countEl = document.getElementById('setlist-count');
+  const startBtn = document.getElementById('start-show-btn');
+
+  if (!order) return;
+
+  countEl.textContent = setlist.length;
+  startBtn.disabled = setlist.length === 0;
+
+  if (setlist.length === 0) {
+    order.innerHTML = `<div class="empty-state" style="padding:30px 20px">
+      <div class="icon" style="font-size:28px">👉</div>
+      <p style="font-size:12px">Hacé clic en una canción de la derecha para agregarla</p>
+    </div>`;
+    return;
+  }
+
+  order.innerHTML = setlist.map((id, i) => {
+    const song = db.songs.find(s => s.id === id);
+    if (!song) return '';
+    return `<div class="setlist-entry" draggable="true" data-idx="${i}" data-id="${id}"
+      ondragstart="onDragStart(event,${i})"
+      ondragover="onDragOver(event)"
+      ondrop="onDrop(event,${i})"
+      ondragend="onDragEnd()"
+      ondragleave="onDragLeave(event)"
+      onclick="handleSetlistEntryClick(event,${i})"
+      title="Click para ir al show desde este tema">
+      <div class="drag-indicator"></div>
+      <div class="drag-handle" title="Arrastrar para reordenar" onclick="event.stopPropagation()">⠿</div>
+      <div class="pos">${i+1}</div>
+      <div style="flex:1;min-width:0">
+        <div class="s-title">${esc(song.title)}</div>
+        <div class="s-artist">${esc(song.artist || '')}</div>
+      </div>
+      <span class="play-hint">▶ ir al show</span>
+      <button class="remove-btn" onclick="event.stopPropagation(); removeFromSetlist(${i})">✕</button>
+    </div>`;
+  }).join('');
+
+  renderPickerList();
+}
+
+function onDragStart(e, idx) {
+  dragSrcIdx = idx;
+  e.dataTransfer.effectAllowed = 'move';
+  e.currentTarget.style.opacity = '0.4';
+}
+
+function onDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  e.currentTarget.classList.add('drag-over');
+}
+
+function onDragLeave(e) {
+  e.currentTarget.classList.remove('drag-over');
+}
+
+function onDrop(e, targetIdx) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if (dragSrcIdx === null || dragSrcIdx === targetIdx) return;
+  const [moved] = setlist.splice(dragSrcIdx, 1);
+  setlist.splice(targetIdx, 0, moved);
+  saveSetlist();
+  renderSetlist();
+}
+
+function onDragEnd() {
+  dragSrcIdx = null;
+  document.querySelectorAll('.setlist-entry').forEach(el => {
+    el.style.opacity = '';
+    el.classList.remove('drag-over');
+  });
+}
+
+function addToSetlist(songId) {
+  setlist.push(songId);
+
+  saveSetlist();
+  renderSetlist();
+}
+
+function removeFromSetlist(idx) {
+  setlist.splice(idx, 1);
+  saveSetlist();
+  renderSetlist();
+}
+
+function clearSetlist() {
+  if (setlist.length === 0) return;
+  if (confirm('¿Vaciar el setlist?')) {
+    setlist = [];
+    saveSetlist();
+    renderSetlist();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SHOW / TELEPROMPTER
+// ═══════════════════════════════════════════════════════════════
+
+function startShow(mode) {
+  showMode = mode;
+  currentSongIndex = 0;
+  goto('screen-show');
+  buildTeleprompterRoll();
+  updateShowHeader();
+  document.getElementById('teleprompter-scroll').scrollTop = 0;
+}
+
+function startShowAtIndex(idx) {
+  showMode = 'manual';
+  currentSongIndex = idx;
+  goto('screen-show');
+  buildTeleprompterRoll();
+  updateShowHeader();
+  // Scroll al tema elegido después de que el DOM esté listo
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => scrollToSong(idx));
+  });
+}
+
+function handleSetlistEntryClick(event, idx) {
+  // No disparar si el click fue en el drag handle o remove btn (ya tienen stopPropagation)
+  startShowAtIndex(idx);
+}
+
+let songObserver = null;
+
+function buildTeleprompterRoll() {
+  const content = document.getElementById('teleprompter-content');
+  const scrollEl = document.getElementById('teleprompter-scroll');
+  const songs = showMode === 'ableset'
+    ? (currentAblesetSong ? [currentAblesetSong] : [])
+    : setlist.map(id => db.songs.find(s => s.id === id)).filter(Boolean);
+
+  if (songs.length === 0) {
+    content.innerHTML = `<div style="text-align:center;color:var(--text3);padding:60px;font-size:18px">Sin canciones</div>`;
+    return;
+  }
+
+  content.innerHTML = songs.map((song, idx) => {
+    const lyricsHtml = formatLyricsHTML(song.lyrics || '(Sin letra)');
+    const sep = idx > 0 ? `<div class="song-separator">
+      <div class="sep-line"></div>
+      <div class="sep-name">${esc(song.title)}</div>
+      <div class="sep-line"></div>
+    </div>` : '';
+    return `<div class="song-block" id="song-block-${idx}" data-idx="${idx}">${sep}${lyricsHtml}</div>`;
+  }).join('');
+
+  document.documentElement.style.setProperty('--lyrics-size', fontSize + 'px');
+
+  // Observar qué bloque entra en pantalla mientras se scrollea
+  if (songObserver) songObserver.disconnect();
+  songObserver = new IntersectionObserver(entries => {
+    // Encontrar el bloque más visible (mayor intersectionRatio)
+    let best = null;
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        if (!best || entry.intersectionRatio > best.intersectionRatio) {
+          best = entry;
+        }
+      }
+    });
+    if (best) {
+      const idx = parseInt(best.target.dataset.idx);
+      if (!isNaN(idx) && idx !== currentSongIndex) {
+        currentSongIndex = idx;
+        updateShowHeader();
+      }
+    }
+  }, {
+    root: scrollEl,
+    threshold: [0.1, 0.3, 0.5, 0.7, 0.9]
+  });
+
+  document.querySelectorAll('.song-block').forEach(block => {
+    songObserver.observe(block);
+  });
+}
+
+function formatLyricsHTML(lyrics) {
+  const lines = lyrics.split('\n');
+  return lines.map(line => {
+    const trimmed = line.trim();
+    if (!trimmed) return '<div class="lyrics-line empty"></div>';
+    if (/^\[.+\]$/.test(trimmed)) return `<div class="lyrics-line section-tag">${esc(trimmed)}</div>`;
+    return `<div class="lyrics-line">${esc(line)}</div>`;
+  }).join('');
+}
+
+function scrollToSong(idx) {
+  const block = document.getElementById(`song-block-${idx}`);
+  const scrollEl = document.getElementById('teleprompter-scroll');
+  if (!block || !scrollEl) return;
+  // Posición del bloque relativa al contenedor scrolleable
+  const blockTop = block.getBoundingClientRect().top - scrollEl.getBoundingClientRect().top + scrollEl.scrollTop;
+  scrollEl.scrollTo({ top: blockTop, behavior: 'smooth' });
+}
+
+function scrollToTop() {
+  const scrollEl = document.getElementById('teleprompter-scroll');
+  scrollEl.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function nextSong() {
+  if (showMode === 'manual') {
+    if (currentSongIndex < setlist.length - 1) {
+      currentSongIndex++;
+      updateShowHeader();
+      scrollToSong(currentSongIndex);
+    } else {
+      showToast('Última canción del setlist', 'error');
+    }
+  }
+}
+
+function prevSong() {
+  if (currentSongIndex > 0) {
+    currentSongIndex--;
+    updateShowHeader();
+    scrollToSong(currentSongIndex);
+  }
+}
+
+function updateShowHeader() {
+  const songs = showMode === 'manual'
+    ? setlist.map(id => db.songs.find(s => s.id === id)).filter(Boolean)
+    : (currentAblesetSong ? [currentAblesetSong] : []);
+
+  const song = songs[currentSongIndex];
+  document.getElementById('show-counter').textContent = `${currentSongIndex + 1}/${songs.length}`;
+  document.getElementById('show-song-name').textContent = song ? song.title : '—';
+}
+
+// Auto scroll — eliminado según requerimiento del usuario
+
+function changeFontSize(delta) {
+  fontSize = Math.max(18, Math.min(80, fontSize + delta));
+  document.getElementById('font-val').textContent = fontSize;
+  document.documentElement.style.setProperty('--lyrics-size', fontSize + 'px');
+}
+
+function toggleMirror() {
+  mirrorMode = !mirrorMode;
+  document.getElementById('screen-show').classList.toggle('mirror-mode', mirrorMode);
+  document.getElementById('mirror-btn').style.color = mirrorMode ? 'var(--accent)' : '';
+}
+
+// UI siempre visible — header y footer fijos durante el show
+function showUI() {
+  document.getElementById('show-header').classList.remove('hidden');
+  document.getElementById('show-footer').classList.remove('hidden');
+}
+
+function hideUI() {
+  // No se usa más, pero se mantiene para no romper referencias
+}
+
+function toggleUI() {
+  // Tap en el contenido no hace nada — el header y footer siempre están visibles
+}
+
+function exitShow() {
+  clearInterval(scrollInterval);
+  goto(showMode === 'ableset' ? 'screen-ableset' : 'screen-setlist');
+}
+
+// Teclado
+document.addEventListener('keydown', e => {
+  const active = document.querySelector('.screen.active');
+  if (!active || active.id !== 'screen-show') return;
+
+  const scrollEl = document.getElementById('teleprompter-scroll');
+
+  switch(e.key) {
+    case 'ArrowDown':
+      e.preventDefault();
+      scrollEl.scrollBy({ top: 80, behavior: 'smooth' });
+      break;
+    case 'ArrowUp':
+      e.preventDefault();
+      scrollEl.scrollBy({ top: -80, behavior: 'smooth' });
+      break;
+    case 'ArrowRight':
+      e.preventDefault();
+      nextSong();
+      break;
+    case 'ArrowLeft':
+      e.preventDefault();
+      prevSong();
+      break;
+    case 'Escape':
+      exitShow();
+      break;
+    case '+':
+    case '=':
+      changeFontSize(4);
+      break;
+    case '-':
+      changeFontSize(-4);
+      break;
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════
+// MODAL: AGREGAR CANCIÓN
+// ═══════════════════════════════════════════════════════════════
+
+function openAddModal() {
+  document.getElementById('add-title').value = '';
+  document.getElementById('add-artist').value = '';
+  document.getElementById('add-lyrics').value = '';
+  setAIStatus('idle', 'La IA buscará y formateará la letra automáticamente');
+  document.getElementById('modal-add').classList.add('open');
+  setTimeout(() => document.getElementById('add-title').focus(), 100);
+}
+
+async function formatLyricsManual() {
+  const lyrics = document.getElementById('add-lyrics').value.trim();
+  if (!lyrics) { showToast('Pegá la letra primero', 'error'); return; }
+  if (!config.apiKey) { showToast('Configurá tu API key de Anthropic primero', 'error'); goto('screen-config'); closeAddModal(); return; }
+  const title = document.getElementById('add-title').value.trim();
+  const artist = document.getElementById('add-artist').value.trim();
+  const btn = document.getElementById('format-lyrics-btn');
+  btn.disabled = true;
+  btn.textContent = '✨ Formateando...';
+  setAIStatus('loading', 'Formateando la letra...');
+  try {
+    const formatted = await callFormatAPI(lyrics, title, artist);
+    document.getElementById('add-lyrics').value = formatted;
+    setAIStatus('success', '¡Letra formateada!');
+    showToast('✓ Letra formateada');
+  } catch(err) {
+    setAIStatus('error', 'Error: ' + err.message);
+    showToast('Error al formatear: ' + err.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '✨ Formatear con IA';
+  }
+}
+
+async function formatLyricsEdit() {
+  const lyrics = document.getElementById('edit-lyrics').value.trim();
+  if (!lyrics) { showToast('No hay letra para formatear', 'error'); return; }
+  if (!config.apiKey) { showToast('Configurá tu API key de Anthropic primero', 'error'); closeEditModal(); goto('screen-config'); return; }
+  const title = document.getElementById('edit-title').value.trim();
+  const artist = document.getElementById('edit-artist').value.trim();
+  const btn = document.querySelector('#editor-lyrics .btn-ghost');
+  btn.disabled = true;
+  btn.textContent = '✨ Formateando...';
+  try {
+    const formatted = await callFormatAPI(lyrics, title, artist);
+    document.getElementById('edit-lyrics').value = formatted;
+    showToast('✓ Letra formateada');
+  } catch(err) {
+    showToast('Error al formatear: ' + err.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '✨ Formatear con IA';
+  }
+}
+
+async function callFormatAPI(lyrics, title, artist) {
+  const prompt = `Formateá la siguiente letra de canción${title ? ` ("${title}"${artist ? ` de ${artist}` : ''})` : ''}.
+
+Reglas:
+- Identificá y marcá cada sección con etiquetas entre corchetes: [INTRO], [VERSO 1], [VERSO 2], [PRE-CORO], [CORO], [CORO 2], [PUENTE], [OUTRO], etc.
+- Dejá una línea vacía entre secciones/estrofas
+- Corregí errores obvios de tipeo si los hay
+- Mantené TODAS las palabras originales tal cual, no cambies la letra
+- Devolvé SOLO la letra formateada, sin ningún texto adicional ni explicaciones
+
+LETRA:
+${lyrics}`;
+
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 2000,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error?.message || 'Error de API');
+
+  return data.content.filter(b => b.type === 'text').map(b => b.text).join('\n').trim();
+}
+
+function closeAddModal() {
+  document.getElementById('modal-add').classList.remove('open');
+}
+
+function setAIStatus(state, msg) {
+  const el = document.getElementById('ai-status');
+  el.className = 'ai-status ' + state;
+  document.getElementById('ai-status-text').textContent = msg;
+}
+
+async function fetchLyricsAI() {
+  const title = document.getElementById('add-title').value.trim();
+  const artist = document.getElementById('add-artist').value.trim();
+
+  if (!title) { showToast('Ingresá el título de la canción', 'error'); return; }
+  if (!config.apiKey) {
+    showToast('Configurá tu API key de Anthropic primero', 'error');
+    closeAddModal();
+    goto('screen-config');
+    return;
+  }
+
+  setAIStatus('loading', 'Buscando letra en internet...');
+  document.getElementById('fetch-lyrics-btn').disabled = true;
+
+  try {
+    const prompt = `Buscá la letra completa de la canción "${title}"${artist ? ` de ${artist}` : ''} en internet.
+
+Formateala de la siguiente manera:
+- Marcá cada sección con [INTRO], [VERSO 1], [VERSO 2], [PRE-CORO], [CORO], [PUENTE], [OUTRO] etc según corresponda
+- Entre estrofas dejá una línea vacía
+- Solo devolvé la letra formateada, sin ningún texto adicional, sin comillas, sin explicaciones
+- Si no encontrás la letra, respondé solo con: NO_ENCONTRADA`;
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2000,
+        tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error?.message || 'Error de API');
+    }
+
+    const text = data.content
+      .filter(b => b.type === 'text')
+      .map(b => b.text)
+      .join('\n')
+      .trim();
+
+    if (!text || text === 'NO_ENCONTRADA') {
+      setAIStatus('error', 'No se encontró la letra. Podés ingresarla manualmente.');
+      document.getElementById('add-lyrics').value = '';
+    } else {
+      setAIStatus('success', '¡Letra encontrada! Podés editarla antes de guardar.');
+      document.getElementById('add-lyrics').value = text;
+    }
+
+  } catch(err) {
+    setAIStatus('error', 'Error: ' + err.message);
+  } finally {
+    document.getElementById('fetch-lyrics-btn').disabled = false;
+  }
+}
+
+function saveSong() {
+  const title = document.getElementById('add-title').value.trim();
+  const artist = document.getElementById('add-artist').value.trim();
+  const lyrics = document.getElementById('add-lyrics').value.trim();
+
+  if (!title) { showToast('El título es obligatorio', 'error'); return; }
+
+  const song = {
+    id: 'song_' + Date.now() + '_' + Math.random().toString(36).slice(2),
+    title,
+    artist,
+    lyrics,
+    createdAt: Date.now()
+  };
+
+  db.songs.push(song);
+  saveData();
+  closeAddModal();
+  renderLibrary();
+  showToast('✓ Canción guardada');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MODAL: EDITAR CANCIÓN
+// ═══════════════════════════════════════════════════════════════
+
+let editingId = null;
+
+function openEditModal(songId) {
+  const song = db.songs.find(s => s.id === songId);
+  if (!song) return;
+
+  editingId = songId;
+  document.getElementById('edit-title').value = song.title;
+  document.getElementById('edit-artist').value = song.artist || '';
+  document.getElementById('edit-lyrics').value = song.lyrics || '';
+  switchEditorTab('lyrics');
+  document.getElementById('modal-edit').classList.add('open');
+}
+
+function closeEditModal() {
+  document.getElementById('modal-edit').classList.remove('open');
+  editingId = null;
+}
+
+function switchEditorTab(tab) {
+  document.querySelectorAll('.editor-tabs .tab').forEach((t, i) => {
+    t.classList.toggle('active', ['lyrics','preview','help'][i] === tab);
+  });
+  document.getElementById('editor-lyrics').style.display = tab === 'lyrics' ? 'flex' : 'none';
+  document.getElementById('editor-preview').style.display = tab === 'preview' ? 'block' : 'none';
+  document.getElementById('editor-help').style.display = tab === 'help' ? 'block' : 'none';
+
+  if (tab === 'preview') {
+    const lyrics = document.getElementById('edit-lyrics').value;
+    document.getElementById('editor-preview').innerHTML = formatLyricsHTML(lyrics);
+    document.documentElement.style.setProperty('--lyrics-size', '20px');
+  }
+}
+
+function updateSong() {
+  const song = db.songs.find(s => s.id === editingId);
+  if (!song) return;
+
+  song.title = document.getElementById('edit-title').value.trim() || song.title;
+  song.artist = document.getElementById('edit-artist').value.trim();
+  song.lyrics = document.getElementById('edit-lyrics').value;
+
+  saveData();
+  closeEditModal();
+  renderLibrary();
+  showToast('✓ Cambios guardados');
+}
+
+function deleteSong() {
+  if (!confirm('¿Eliminar esta canción de la biblioteca?')) return;
+  db.songs = db.songs.filter(s => s.id !== editingId);
+  // También quitar del setlist si estuviera
+  setlist = setlist.filter(id => id !== editingId);
+  saveData();
+  saveSetlist();
+  closeEditModal();
+  renderLibrary();
+  showToast('Canción eliminada');
+}
+
+async function refetchLyrics() {
+  const title = document.getElementById('edit-title').value.trim();
+  const artist = document.getElementById('edit-artist').value.trim();
+  if (!title) { showToast('Ingresá el título primero', 'error'); return; }
+
+  // Abrir modal de agregar temporalmente para reusar la lógica
+  closeEditModal();
+  openAddModal();
+  document.getElementById('add-title').value = title;
+  document.getElementById('add-artist').value = artist;
+  await fetchLyricsAI();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ABLESET
+// ═══════════════════════════════════════════════════════════════
+
+function toggleAblesetConnection() {
+  if (ablesetConnected) {
+    disconnectAbleset();
+  } else {
+    connectAbleset();
+  }
+}
+
+function connectAbleset() {
+  const url = `ws://${config.serverIP}:${config.serverPort}`;
+  setAblesetStatus('connecting', 'Conectando...', url);
+
+  try {
+    ablesetWS = new WebSocket(url);
+
+    ablesetWS.onopen = () => {
+      ablesetConnected = true;
+      setAblesetStatus('connected', 'Conectado al servidor', url);
+      document.getElementById('ableset-connect-btn').textContent = 'Desconectar';
+    };
+
+    ablesetWS.onmessage = (e) => {
+      try {
+        const msg = JSON.parse(e.data);
+        if (msg.type === 'song_change') {
+          handleAblesetSongChange(msg.songName);
+        }
+      } catch(err) {}
+    };
+
+    ablesetWS.onclose = () => {
+      ablesetConnected = false;
+      setAblesetStatus('disconnected', 'Desconectado', '');
+      document.getElementById('ableset-connect-btn').textContent = 'Conectar';
+    };
+
+    ablesetWS.onerror = () => {
+      setAblesetStatus('error', 'No se puede conectar. ¿Está corriendo el servidor?', url);
+      document.getElementById('ableset-connect-btn').textContent = 'Reintentar';
+    };
+  } catch(err) {
+    setAblesetStatus('error', 'Error: ' + err.message, '');
+  }
+}
+
+function disconnectAbleset() {
+  if (ablesetWS) {
+    ablesetWS.close();
+    ablesetWS = null;
+  }
+  ablesetConnected = false;
+  setAblesetStatus('disconnected', 'Desconectado', '');
+  document.getElementById('ableset-connect-btn').textContent = 'Conectar';
+}
+
+function setAblesetStatus(state, label, sub) {
+  const dot = document.getElementById('ableset-dot');
+  dot.className = 'status-dot ' + (state === 'connected' ? 'connected' : state === 'connecting' ? 'connecting' : state === 'error' ? 'error' : '');
+  document.getElementById('ableset-status-label').textContent = label;
+  document.getElementById('ableset-status-sub').textContent = sub || '';
+}
+
+function handleAblesetSongChange(songName) {
+  // Buscar en la biblioteca por nombre (flexible)
+  const normalizedName = songName.toLowerCase().trim();
+  const song = db.songs.find(s =>
+    s.title.toLowerCase().trim() === normalizedName ||
+    s.title.toLowerCase().includes(normalizedName) ||
+    normalizedName.includes(s.title.toLowerCase())
+  );
+
+  document.getElementById('ableset-song-name').textContent = songName;
+  document.getElementById('ableset-show-btn').disabled = false;
+
+  if (song) {
+    currentAblesetSong = song;
+    document.getElementById('ableset-song-artist').textContent = song.artist || '';
+
+    // Si el show está activo en modo ableset, actualizar automáticamente
+    const showScreen = document.getElementById('screen-show');
+    if (showScreen.classList.contains('active') && showMode === 'ableset') {
+      buildTeleprompterRoll();
+      scrollToTop();
+      stopAutoScroll();
+      document.getElementById('show-song-name').textContent = song.title;
+    }
+  } else {
+    currentAblesetSong = { id: 'ableset_temp', title: songName, artist: 'Ableton', lyrics: '(Sin letra en biblioteca para esta canción)' };
+    document.getElementById('ableset-song-artist').textContent = 'No encontrado en biblioteca';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CONFIGURACIÓN
+// ═══════════════════════════════════════════════════════════════
+
+function saveConfig() {
+  config.apiKey = document.getElementById('cfg-apikey').value.trim();
+  config.serverIP = document.getElementById('cfg-server-ip').value.trim() || '192.168.137.1';
+  config.serverPort = document.getElementById('cfg-server-port').value.trim() || '3001';
+  saveConfigData();
+  document.getElementById('ableset-ip-display').textContent = `${config.serverIP}:${config.serverPort}`;
+  showToast('✓ Configuración guardada');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// EXPORTAR / IMPORTAR
+// ═══════════════════════════════════════════════════════════════
+
+function exportDB() {
+  const data = JSON.stringify(db, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `teleprompter-biblioteca-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('✓ Biblioteca exportada');
+}
+
+function importDB(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if (!imported.songs || !Array.isArray(imported.songs)) throw new Error('Formato inválido');
+
+      const merge = confirm(`Importar ${imported.songs.length} canciones. ¿Combinar con la biblioteca existente o reemplazar?\n\nAceptar = Combinar\nCancelar = Reemplazar`);
+      if (merge) {
+        // Combinar, evitar duplicados por ID
+        const existingIds = new Set(db.songs.map(s => s.id));
+        const newSongs = imported.songs.filter(s => !existingIds.has(s.id));
+        db.songs.push(...newSongs);
+        showToast(`✓ ${newSongs.length} canciones importadas`);
+      } else {
+        db = imported;
+        showToast(`✓ Biblioteca reemplazada con ${db.songs.length} canciones`);
+      }
+      saveData();
+      renderLibrary();
+    } catch(err) {
+      showToast('Error al importar: ' + err.message, 'error');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function clearAllSongs() {
+  if (!confirm('¿Eliminar TODA la biblioteca? Esta acción no se puede deshacer.')) return;
+  db.songs = [];
+  setlist = [];
+  saveData();
+  saveSetlist();
+  renderLibrary();
+  showToast('Biblioteca eliminada');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SCRIPT NODE.JS
+// ═══════════════════════════════════════════════════════════════
+
+function copyNodeScript() {
+  const script = `// ═══════════════════════════════════════════════════════════════
+// TELEPROMPTER BRIDGE - servidor Node.js para PC
+// ═══════════════════════════════════════════════════════════════
+// Requiere Node.js instalado: https://nodejs.org
+// Uso: node teleprompter-server.js
+// ═══════════════════════════════════════════════════════════════
+
+const http = require('http');
+const WebSocket = require('ws');
+
+// Configuración
+const WS_PORT = 3001;         // Puerto WebSocket (debe coincidir con la app)
+const ABLESET_HOST = '127.0.0.1';  // Ableset corre en la misma PC
+const ABLESET_PORT = 3000;    // Puerto por defecto de Ableset
+const POLL_INTERVAL = 500;    // ms entre consultas a Ableset
+
+// ═══════════════════════════════════════════════════════════════
+// Instalar dependencia si es necesario
+// ═══════════════════════════════════════════════════════════════
+// Si falla, ejecutá: npm install ws
+// O podés usar: npx ws (sin instalar nada)
+
+// ═══════════════════════════════════════════════════════════════
+// Servidor WebSocket
+// ═══════════════════════════════════════════════════════════════
+
+const wss = new WebSocket.Server({ port: WS_PORT });
+let clients = new Set();
+let lastSongName = null;
+
+wss.on('connection', (ws) => {
+  clients.add(ws);
+  console.log('[WS] Cliente conectado. Total:', clients.size);
+
+  // Enviar canción actual al conectarse
+  if (lastSongName) {
+    ws.send(JSON.stringify({ type: 'song_change', songName: lastSongName }));
+  }
+
+  ws.on('close', () => {
+    clients.delete(ws);
+    console.log('[WS] Cliente desconectado. Total:', clients.size);
+  });
+});
+
+function broadcast(msg) {
+  const json = JSON.stringify(msg);
+  clients.forEach(ws => {
+    if (ws.readyState === WebSocket.OPEN) {
+      ws.send(json);
+    }
+  });
+}
+
+console.log('[SERVER] WebSocket escuchando en puerto ' + WS_PORT);
+
+// ═══════════════════════════════════════════════════════════════
+// Polling a Ableset API
+// ═══════════════════════════════════════════════════════════════
+
+function getAblesetCurrentSong() {
+  return new Promise((resolve, reject) => {
+    const options = {
+      hostname: ABLESET_HOST,
+      port: ABLESET_PORT,
+      path: '/api/session',  // Endpoint de Ableset
+      method: 'GET',
+      timeout: 1000,
+    };
+
+    const req = http.request(options, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        try {
+          const session = JSON.parse(data);
+          // Ableset expone el setlist así:
+          const tracks = session.tracks || session.setlist || [];
+          const currentIdx = session.currentTrackIndex ?? session.activeTrack ?? 0;
+          const currentTrack = tracks[currentIdx];
+          const name = currentTrack?.name || currentTrack?.title || null;
+          resolve(name);
+        } catch(e) {
+          reject(e);
+        }
+      });
+    });
+
+    req.on('error', reject);
+    req.on('timeout', () => { req.destroy(); reject(new Error('timeout')); });
+    req.end();
+  });
+}
+
+// Polling loop
+async function pollAbleset() {
+  try {
+    const songName = await getAblesetCurrentSong();
+    if (songName && songName !== lastSongName) {
+      lastSongName = songName;
+      console.log('[ABLESET] Tema actual:', songName);
+      broadcast({ type: 'song_change', songName });
+    }
+  } catch(err) {
+    // Ableset no disponible — silencioso
+  }
+  setTimeout(pollAbleset, POLL_INTERVAL);
+}
+
+pollAbleset();
+
+// ═══════════════════════════════════════════════════════════════
+// Modo manual (sin Ableset): enviar tema via consola
+// ═══════════════════════════════════════════════════════════════
+// Escribí el nombre de un tema en la consola y presioná Enter
+// para enviarlo al teleprompter manualmente.
+
+const readline = require('readline');
+const rl = readline.createInterface({ input: process.stdin });
+rl.on('line', (line) => {
+  const name = line.trim();
+  if (name) {
+    lastSongName = name;
+    broadcast({ type: 'song_change', songName: name });
+    console.log('[MANUAL] Enviado:', name);
+  }
+});
+
+console.log('[SERVER] Listo. Escribí un nombre de canción + Enter para enviar manualmente.');
+console.log('[SERVER] O dejalo correr y Ableset enviará los cambios automáticamente.');
+`;
+
+  navigator.clipboard.writeText(script).then(() => {
+    showToast('✓ Script copiado al portapapeles');
+  }).catch(() => {
+    // Fallback
+    const ta = document.createElement('textarea');
+    ta.value = script;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('✓ Script copiado');
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// UTILIDADES
+// ═══════════════════════════════════════════════════════════════
+
+function esc(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+let toastTimeout;
+function showToast(msg, type = 'success') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'show ' + type;
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => { el.className = ''; }, 2800);
+}
+
+// Cerrar modales al hacer clic fuera.
+// Usamos mousedown + mouseup para evitar que soltar una selección de texto
+// fuera del modal lo cierre accidentalmente.
+let mouseDownOnOverlay = false;
+
+document.getElementById('modal-add').addEventListener('mousedown', e => {
+  mouseDownOnOverlay = e.target === e.currentTarget;
+});
+document.getElementById('modal-add').addEventListener('mouseup', e => {
+  if (mouseDownOnOverlay && e.target === e.currentTarget) closeAddModal();
+  mouseDownOnOverlay = false;
+});
+
+document.getElementById('modal-edit').addEventListener('mousedown', e => {
+  mouseDownOnOverlay = e.target === e.currentTarget;
+});
+document.getElementById('modal-edit').addEventListener('mouseup', e => {
+  if (mouseDownOnOverlay && e.target === e.currentTarget) closeEditModal();
+  mouseDownOnOverlay = false;
+});
+
+// Enter en el campo de título del modal de agregar busca letra
+document.getElementById('add-title').addEventListener('keydown', e => {
+  if (e.key === 'Enter') fetchLyricsAI();
+});
+
+// ═══════════════════════════════════════════════════════════════
+// INICIALIZAR
+// ═══════════════════════════════════════════════════════════════
+
+loadData();
+console.log('[TELEPROMPTER] Iniciado. Canciones:', db.songs.length);
+</script>
+</body>
+</html>
