@@ -1384,12 +1384,164 @@ let currentAblesetSong = null;
 // PERSISTENCIA
 // ═══════════════════════════════════════════════════════════════
 
+// ═══════════════════════════════════════════════════════════════
+// CANCIONES PRE-CARGADAS
+// ═══════════════════════════════════════════════════════════════
+const PRELOADED_SONGS = [
+  {
+    "id": "song_464497056828_cdlc",
+    "title": "AMORES COMO EL NUESTRO",
+    "artist": "CDLC",
+    "lyrics": "Amores como el nuestro quedan ya muy pocos\nDel cielo, caen estrellas sin oír deseos\n\nDeshojar una rosa ya es cosa de tontos\nA nadie le interesan ya los sentimientos\n\nComo los unicornios\nVan desapareciendo\n\nAmar es hoy tan fácil\nSolo es cosa de un beso\n\nUn amor como el nuestro\nNo debe morir jamás\n\nAmores como el nuestro cada vez hay menos\nEn los muros, casi nadie pinta corazones\n\nYa nadie se promete más allá del tiempo\nDe sábanas mojadas, hablan las canciones\n\nComo Romeo y Julieta\nLo nuestro es algo eterno\n\nEstar enamorado\nEs darse por completo\n\nUn amor como el nuestro\nNo debe morir jamás\n\nComo los unicornios\nVan desapareciendo\n\nAmar y ser amado\nEs darse por completo\n\nUn amor como el nuestro\nNo debe morir jamás",
+    "createdAt": 1700000000000
+  },
+  {
+    "id": "song_540051774536_cdlc",
+    "title": "YO NO SE MAÑANA",
+    "artist": "CDLC",
+    "lyrics": "Yo no sé si tú, no sé si yo\n\nSeguiremos siendo como hoy\n\nNo sé si después de amanecer\n\nVamos a sentir la misma sed\n\n¿Para qué pensar y suponer?\n\nNo preguntes cosas que no sé\n\nYo no sé\n\nNo sé dónde vamos a parar\n\nEso ya la piel nos lo dirá\n\n¿Para qué jurar y prometer\n\nAlgo que no está en nuestro poder?\n\nYo no sé lo que es eterno\n\nNo me pidas algo que es del tiempo\n\nYo no sé mañana\n\nYo no sé mañana\n\nSi estaremos juntos\n\nSi se acaba el mundo\n\nYo no sé si soy para ti, si serás para mí\n\nSi lleguemos amarnos o a odiarnos\n\nYo no sé mañana\n\nYo no sé mañana\n\nQuién va estar aquí\n\nDe un café pasamos al sofá\n\nDe un botón a todo lo demás\n\nNo pusimos reglas ni reloj\n\nAquí estamos solos tú y yo\n\nTodo lo que ves es lo que soy\n\nNo me pidas más de lo que doy\n\nNo, oh oh\n\nYo no sé mañana\n\nYo no sé mañana\n\nSi estaremos juntos\n\nSi se acaba el mundo\n\nYo no sé si soy para ti, si serás para mí\n\nSi lleguemos amarnos o a odiarnos\n\nYo no sé mañana\n\nYo no sé mañana\n\nQuién va estar aquí",
+    "createdAt": 1700000000000
+  },
+  {
+    "id": "song_58145103592_cdlc",
+    "title": "SE PARECE MAS A TI",
+    "artist": "CDLC",
+    "lyrics": "Hoy te veo arreglada\n\nHoy que ya no queda nada\n\nMi nuevo amor cada día\n\nSe parece más a ti\n\nTu mirada me hipnotiza\n\nHoy recuerdo tu sonrisa\n\nEncima mi nuevo amor\n\nSe parece más a ti\n\nLa miro a los ojos, se reflejan en ti\n\nHoy beso su boca y más me acuerdo de ti\n\nDesnuda en mi cama, ella que me ama\n\nEncima su amor\n\nSe parece más a ti\n\nLa miro a los ojos, se reflejan en ti\n\nHoy beso su boca y más me acuerdo de ti\n\nDesnuda en mi cama, ella que me ama\n\nEncima su amor\n\nSe parece más a ti\n\nHoy te veo arreglada\n\nHoy que ya no queda nada\n\nMi nuevo amor cada día\n\nSe parece más a ti\n\nLa miro a los ojos, se reflejan en ti\n\nHoy beso su boca y más me acuerdo de ti\n\nDesnuda en mi cama, ella que me ama\n\nEncima su amor\n\nSe parece más a ti",
+    "createdAt": 1700000000000
+  },
+  {
+    "id": "song_294039657231_cdlc",
+    "title": "EL CIELO SE QUEDÓ SIN ESTRELLAS",
+    "artist": "CDLC",
+    "lyrics": "El cielo se quedó sin estrellas\nY tu no estás\n\nMi corazón y la luna no se llenan\nPor que te vas\n\nEl cielo se quedó sin estrellas\nY tu no estás\n\nMi corazón y la luna no se llenan\nPor que te vas\n\nCada vez que miro al cielo\nMe pregunto si la luna\nTe dira lo mucho que te quiero\n\nCada vez que miro al cielo\nLe pregunto a las estrellas\nSi te han dicho que eres mi lucero\n\nYa las noches son más tristes ohoheeooh\nQuiero saber si volveras ahahah\n\nYa la luna se ha empeñado en no salir\nLas estrellas ya no brillan y yo\nya nada soy sin ti\n\nEl cielo se quedó sin estrellas\nY tu no estás\n\nMi corazón y la luna no se llenan\nPor que te vas\n\nEl cielo se quedó sin estrellas\nY tu no estás\n\nMi corazón y la luna no se llenan\nPor que te vas\n\nEl cielo se quedó sin estrellas\nY tu no estás\nMi corazón y la luna no se llenan por que te vas\n\nYa las noches son más tristes ohoheeooh\nQuiero saber si volveras ahahahah\n\nYa la luna se ha empeñado en no salir\nLas estrellas ya no brillan y yo\n\nya nada soy sin ti",
+    "createdAt": 1700000000000
+  },
+  {
+    "id": "song_825448385292_cdlc",
+    "title": "EL EMBRUJO",
+    "artist": "CDLC",
+    "lyrics": "Hoy, igual que ayer estoy aquí\nFrente al mar esperando por ti\nNo tardes más, por favor\nQue me desespero sin ti\nSabes bien, corazón\nLo que significas en mí\n\nQue cambié por ti comentarán\nQue vivo pendiente de ti\nY si no estás, no soy feliz\nSabes bien que significas en mí\nCorazón, ven a mí\nQue me desespero por ti\n\nDicen que como te quiero tanto\nYo que tuve tantos amores\nSeguro me has embrujado\n¡Qué importa!\n\nSi es ASÍ, déjalo ahí\nHechizado y embrujado por ti\nQué más da, soy feliz\nNo me rompas ese embrujo, mujer\nQuédate por siempre junto a mí\n\nSi es ASÍ, déjalo ahí\nHechizado y embrujado por ti\nQué más da, soy feliz\nNo, no rompas ese embrujo, mujer\nQuédate por siempre junto a mí\n\nHoy, igual que ayer estoy aquí\nFrente al mar esperando por ti\nNo tardes más, por favor\nQue me desespero sin ti\nSabes bien, corazón\nLo que significas en mí\n\nDicen que como te quiero tanto\nYo que tuve tantos amores\nSeguro me has embrujado\n¡Qué importa!\n\nSi es ASÍ, déjalo ahí\nHechizado y embrujado por ti\nQué más da, soy feliz\nNo me rompas ese embrujo, mujer\nQuédate por siempre junto a mí\n\nSi es ASÍ, déjalo ahí\nHechizado y embrujado por ti\nQué más da, soy feliz\nNo me rompas ese embrujo, mujer\nQuédate por siempre junto a mí",
+    "createdAt": 1700000000000
+  },
+  {
+    "id": "song_896122023605_cdlc",
+    "title": "SI TE VAS",
+    "artist": "CDLC",
+    "lyrics": "Cuéntame ¿que harás después que estrene su cuerpo?\n\nCuando muera tu traviesa curiosidad\n\nCuando memorices todos sus recovecos\n\nY decidas otra vez regresar\n\nYa no estaré aquí en el mismo lugar\n\nSi no tiene más que un par de dedos de frente\n\nY descubres que no se lava bien los dientes\n\nSi te quita los pocos centavos que tienes\n\nY luego te deja solo, tal como quiere\n\nSe que volverás el día en que ella te haga trizas\n\nSin almohadas para llorar\n\nPero si te has decidido, y no quieres más conmigo\n\nNada ahora puede importar\n\nPor que sin ti\n\nEl mundo ya me da igual\n\nSi te vas, si te vas, si te marchas\n\nMi cielo se hará gris\n\nSi te vas, si te vas, ya no tienes\n\nQue venir por mi\n\nSi te vas, si te vas, si me cambias\n\nPor esa bruja, pedazo de cuero\n\nNo vuelvas nunca más\n\nQue no esta aquí\n\nToda escoba nueva siempre barre bien\n\nLuego vas a ver desgastadas las cerdas\n\nCuando las arrugas le corten la piel\n\nY la celulitis invada sus piernas\n\nVolverás desde tu infierno\n\nCon el rabo entre los cuernos\n\nImplorando una vez más\n\nPero para ese entonces\n\nYo estaré un millón de noches\n\nLejos de esta enorme ciudad\n\nLejos de ti\n\nEl mundo ya me da igual\n\nSi te vas, si te vas, si te marchas\n\nMi cielo se hará gris\n\nSi te vas, si te vas, ya no tienes\n\nQue venir por mi\n\nSi te vas, si te vas, si me cambias\n\nPor esa bruja, pedazo de cuero\n\nNo vuelvas nunca más\n\nYo no estaré aquí\n\nSi te vas, si te vas, si te marchas\n\nMi cielo se hará gris\n\nSi te vas, si te vas, ya no tienes\n\nQue venir por mí\n\nSi te vas, si te vas, si me cambias\n\nPor esa bruja, pedazo de cuero\n\nNo vuelvas nunca más\n\nNo vuelvas, no estaré aquí",
+    "createdAt": 1700000000000
+  },
+  {
+    "id": "song_242006470794_cdlc",
+    "title": "LA VENTANITA",
+    "artist": "CDLC",
+    "lyrics": "Desde que me dejaste\nLa ventanita del amor se me cerro\nDesde que me dejaste\nLas azucenas han perdido su color\n\nDesde que me dejaste\nLa ventanita del amor se me cerro\nDesde que me dejaste\nNo hago mas nada que extrañar tu corazón\n\nTengo el alma en pedazos\nYa no aguanto esta pena\nTanto tiempo sin verte es como una condena\n\nTengo el alma en pedazos\nYa no aguanto esta pena\nTanto tiempo sin verte es como una condena\n\nEs tan bonito tener tu cariño\nQue no soy nada si no estoy contigo\nY tenerte por siempre conmigo\nSer tu abrigo en las noches de frió\n\nTengo el alma en pedazos\nYa no aguanto esta pena\nTanto tiempo sin verte es como una condena\n\nDesde que me dejaste\nLa ventanita del amor se me cerro\nDesde que me dejaste\nLas azucenas han perdido su color\n\nDesde que me dejaste\nLa ventanita del amor se me cerro\nDesde que me dejaste\nNo hago mas nada que extrañarte, corazón\n\nTengo el alma en pedazos\nYa no aguanto esta pena\nTanto tiempo sin verte es como una condena\n\nTengo el alma en pedazos\nYa no aguanto esta pena\nTanto tiempo sin verte es como una condena\n\nEs tan bonito tener tu cariño\nQue no soy nada si no estoy contigo\nY tenerte por siempre conmigo\nSer tu abrigo en las noches de frió\n\nTengo el alma en pedazos\nYa no aguanto esta pena\nTanto tiempo sin verte es como una condena\n\nTengo el alma en pedazos\nYa no aguanto esta pena\nTanto tiempo sin verte es como una condena\n\nEs tan bonito tener tu cariño\nQue no soy nada si no estoy contigo\nY tenerte por siempre conmigo\nYa no soy nada si no tengo tu cariño\n\nTengo el alma en pedazos\nYa no aguanto esta pena\nTanto tiempo sin verte es como una condena",
+    "createdAt": 1700000000000
+  },
+  {
+    "id": "song_762020379522_cdlc",
+    "title": "UN BESO Y UNA FLOR",
+    "artist": "CDLC",
+    "lyrics": "Dejaré mi tierra por ti,\nDejaré mis campos y me iré lejos de aquí.\n\nCruzaré llorando el jardín\nY con tu recuerdo partiré, lejos de aquí.\n\nDe día viviré pensando en tu sonrisa\nDe noche las estrellas me acompañarán\nSerás como una luz que alumbre mi camino\nMe voy pero te juro que mañana volveré\n\nAl partir un beso y una flor\nUn \"te quiero\" una caricia y un adiós.\nEs ligero equipaje para tan largo viaje\nLas penas pesan en el corazón.\n\nMás allá del mar habrá un lugar\nDonde el sol cada mañana brille más\nForjarán mi destino las piedras del camino\nLo que nos es querido siempre queda atrás.\n\nBuscaré un lugar para ti\nDonde el cielo se une con el mar, lejos de aquí\n\nCon mis manos y con tu amor\nLograré encontrar otra ilusión, lejos de aquí\n\nDe día viviré pensando en tu sonrisa\nDe noche las estrellas me acompañarán\nSerás como una luz que alumbre mi camino\nMe voy pero te juro que mañana volveré\n\nAl partir un beso y una flor\nUn \"te quiero\" una caricia y un adiós.\nEs ligero equipaje para tan largo viaje\nLas penas pesan en el corazón.\n\nMás allá del mar habrá un lugar\nDonde el sol cada mañana brille más\nForjarán mi destino las piedras del camino\nLo que nos es querido siempre queda atrás.",
+    "createdAt": 1700000000000
+  },
+  {
+    "id": "song_443821580056_cdlc",
+    "title": "A DIOS LE PIDO",
+    "artist": "CDLC",
+    "lyrics": "Que mis ojos se despierten\nCon la luz de tu mirada, yo\n\nA Dios le pido\n\nQue mi madre no se muera\nY que mi padre me recuerde\n\nA Dios le pido\n\nQue te quedes a mi lado\nY que más nunca te me vayas, mi vida\n\nA Dios le pido\nQue mi alma no descanse\nCuando de amarte se trate, mi cielo\n\nA Dios le pido\n\nPor los días que me quedan\nY las noches que aún no llegan, yo\n\nA Dios le pido\n\nPor los hijos de mis hijos\nY los hijos de tus hijos\n\nA Dios le pido\n\nQue mi pueblo no derrame tanta sangre\nY se levante mi gente\n\nA Dios le pido\n\nQue mi alma no descanse\nCuando de amarte se trate, mi cielo\n\nA Dios le pido\n\nUn segundo más de vida para darte\nY mi corazón entero entregarte\n\nUn segundo más de vida para darte\nY a tu lado, para siempre, yo quedarme\n\nUn segundo más de vida, yo\nA Dios le pido\n\nQue si me muero, sea de amor\nY si me enamoro, sea de vos\n\nY que, de tu voz, sea este corazón\nTodos los días, a Dios le pido\n\nQue si me muero, sea de amor\nY si me enamoro, sea de vos\n\nY que, de tu voz, sea este corazón\nTodos los días, a Dios le pido\n\nA Dios le pido\n\nUn segundo más de vida para darte\nY mi corazón entero entregarte\n\nUn segundo más de vida para darte\nY a tu lado, para siempre, yo quedarme\n\nA Dios le pido\n\nQue si me muero, sea de amor\nY si me enamoro, sea de vos\n\nY que, de tu voz, sea este corazón\nTodos los días, a Dios le pido\n\nQue si me muero, sea de amor\nY si me enamoro, sea de vos\n\nY que, de tu voz, sea este corazón\nTodos los días, a Dios le pido\n\nA Dios le pido.\n\nA Dios le pido.\n\nA Dios le pido.\n\nA Dios le pido.",
+    "createdAt": 1700000000000
+  },
+  {
+    "id": "song_72424215460_cdlc",
+    "title": "UNA CALLE ME SEPARA",
+    "artist": "CDLC",
+    "lyrics": "Una cinta en tus cabellos\nUna flor en tu ventana\nUn canario en tu balcón\nCanta al Sol, de la mañana\n\nUna calle me separa\nDel amor que está en mis sueños\nDe tu amor no exijo nada\nSolo quiero ser tu dueño\n\nY mi amor\nQue en busca de ella va\nNo importa ni el dolor\nQue ayer me hizo llorar\nYo sé que al ventanal\nMañana asomará\nSu cara angelical\n\nY mi amor\nQue en busca de ella va\nNo importa ni el dolor\nQue ayer me hizo llorar\nYo sé que al ventanal\nMañana asomará\nSu cara angelical\n\nUna calle me separa\nDel amor que está en mis sueños\nDe tu amor no exijo nada\nSolo quiero ser tu dueño\n\nY mi amor\nQue en busca de ella va\nNo importa ni el dolor\nQue ayer me hizo llorar\nYo sé que al ventanal\nMañana asomará\nSu cara angelical\n\nY mi amor\nQue en busca de ella va\nNo importa ni el dolor\nQue ayer me hizo llorar\nYo sé que al ventanal\nMañana asomará\nSu cara angelical\n\n____________________________________________\n\nSegunda tanda\n\n____________________________________________\n\nYa yo me olvidé\n\nYa yo me olvidé ti\nYa yo me olvidé de tu amor tu amor voy voy\n\nYa yo me olvidé ti\nYa yo me olvidé de tu amor tu amor voy voy\n\nNunca pensé que yo podría olvidarte\nHoy más que nunca seguiré hacia adelante\n\nCon lo que hiciste yo no voy a juzgarte\nPero te aseguraré que tengo otra amante\n\nYo seguiré siendo el romántico artista\nEl que una vez por tu amor fue masoquista\n\nY si algun día yo te encuentro en la pista\nTe darás cuenta que no estás en mi lista\n\nYa yo me olvidé ti\nYa yo me olvidé de tu amor tu amor voy voy\n\nYa yo me olvidé ti\nYa yo me olvidé de tu amor tu amor voy voy\n\nBaby don´t can back to my\nI'm sorry pero es así\n\nYo siempre quise a tu lado ser felíz\nY no lo conseguí nunca lo conseguí\n\nBaby don´t can back to my\nI'm sorry pero es así\n\nYo siempre quise a tu lado ser felíz\nY no lo conseguí nunca lo conseguí\n\nYa yo me olvidé ti\nYa yo me olvidé de tu amor tu amor voy voy\n\nYa yo me olvidé ti\nYa yo me olvidé de tu amor tu amor voy voy",
+    "createdAt": 1700000000000
+  },
+  {
+    "id": "song_320497511822_cdlc",
+    "title": "SON DE AMORES",
+    "artist": "CDLC",
+    "lyrics": "Perdona si pregunto por cómo te encuentras\nPero me han comentado que te han visto sola\nLlorando por las calles en altas horas\nAy, como las locas, locas, locas\n\nComentan que tu niño a ti te ha dejado\nQue no existe consuelo para tanto llanto\nQue solo una amiga está a tu lado\nNo llores más, mi niña, niña, niña\n\nSon de amores\nAmores que matan\n\nAmores que ríen\nAmores que lloran\nAmores que amargan\n\nSon de amores\nAmores que engañan\n\nAmores que agobian\nAmores que juegan\nAmores que faltan\n\nDeja de llorar\nY piensa que algún día un niño te dará\n\nToda una fantasía, eso y mucho más\nPorque tú no estás loca, loca, loca\n\nDeja de llorar\nY sécate esas lagrimillas de cristal\nQue el tiempo volverá, seguro, a rescatar\nToda esa fantasía, fantasía\n\nSon de amores\nAmores que matan\n\nAmores que ríen\nAmores que lloran\nAmores que amargan\n\nSon de amores\nAmores que engañan\n\nAmores que agobian\nAmores que juegan\nAmores que faltan\n\nPideme la luna.\n\nLas horas más lindas\n\nLas paso contigo, sí\n\nNo quiero ni pensar si un día me faltas tú\n\nNo quiero ni pensarlo, amor\n\nTú me acostumbraste\n\nA ser como un niño\n\nNo quiero ni pensar si un día me faltas tú\n\nNo quiero ni pensarlo, amor\n\nPídeme la luna y te la bajaré\n\nPídeme una estrella y hasta allá me iré\n\nMas nunca me digas \"no te quiero más\"\n\nPorque esas palabras me hacen mucho mal\n\nPídeme la vida y te demostraré\n\nCuánto es que te quise y cuánto te amaré\n\nTú fuiste y has sido para mí el amor\n\nRegalo más lindo que me ha dado Dios\n\nPídeme la luna y te la bajaré\n\nPídeme una estrella y hasta allá me iré\n\nMas nunca me digas \"no te quiero más\"\n\nPorque esas palabras me hacen mucho mal\n\nPídeme la vida y te demostraré\n\nCuánto es que te quise y cuánto te amaré\n\nTú fuiste y has sido para mí el amor\n\nRegalo más lindo que me ha dado Dios\n\nPara no verte mas.\n\nCuando no tengas dónde ir\n\nCuando te sangre la nariz\n\nCuando te duela la cabeza\n\nY se termine esa cerveza\n\nCuando las alas de tu avión\n\nSe derritan sin razón\n\nY el cáncer de la soledad\n\nTe haya matado en la ciudad\n\nYo romperé tus fotos\n\nYo quemaré tus cartas\n\nPara no verte más\n\nPara no verte más\n\nYo romperé tus fotos\n\nYo quemaré tus cartas\n\nPara no verte más\n\nPara no verte más\n\nY si logras sobrevivir\n\nAl refucilo de maldad\n\nPreguntarás en dónde estás\n\nPreguntarás qué te pasó\n\nMe voy a poner a fumar\n\nSin preocuparme nada más\n\nTotal, ya es tarde pa volver\n\nTotal, ya es tarde pa soñar\n\nY romperé tus fotos\n\nY quemaré tus cartas\n\nPara no verte más\n\nPara no verte más\n\nYo romperé tus fotos\n\nYo quemaré tus cartas\n\nPara no verte más\n\nPara no verte más\n\nYo romperé tus fotos\n\nYo quemaré tus cartas\n\nPara no verte más\n\nPara no verte más\n\nYo romperé tus fotos\n\nYo quemaré tus cartas\n\nPara no verte más\n\nPara no verte más\n\nYo romperé tus fotos\n\nYo quemaré tus cartas\n\nPara no verte más\n\nPara no verte más\n\nYo romperé tus fotos\n\nYo quemaré tus cartas\n\nPara no verte más\n\nPara no verte más\n\nYo romperé tus fotos\n\nYo quemaré tus cartas\n\nPara no verte más\n\nPara no verte más\n\nCORAZÓN\n\nYo no sé lo que me pasa cuando estoy con vos\n\nMe hipnotiza tu sonrisa\n\nMe desarma tu mirada\n\nY de mí no queda nada\n\nMe derrito como un hielo al sol\n\nCuando vamos a algún lado, nunca elijo yo\n\nPorque lo único que quiero es ir contigo\n\nVivo dando vueltas a tu alrededor\n\nCómo un perro abandonado que en la calle te siguió\n\nPero yo no soy tu prisionero\n\nY no tengo alma de robot\n\nEs que hay algo en tu carita que me gusta\n\nQue me gusta Y se llevó mi corazón\n\nYo no soy tu prisionero\n\nY no tengo alma de robot\n\nEs que hay algo en tu carita que me gusta\n\nQue me gusta Y se llevó mi corazón\n\nPuede ser por tu carácter o mi voluntad\n\nMe hipnotiza tu sonrisa\n\nMe desarma tu mirada\n\nY de mí no queda nada\n\nMe derrito, como un hielo al sol\n\nCuando vamos algun lado nunca elijo yo\n\nPorque lo único que quiero es ir contigo\n\nVivo dando vueltas a tu alrededor\n\nCómo un perro abandonado que en la calle te siguió\n\nPero yo no soy tu prisionero\n\nY no tengo alma de robot\n\nEs que hay algo en tu carita que me gusta\n\nQue me gusta Y se llevó mi corazón\n\nYo no soy tu prisionero\n\nY no tengo alma de robot\n\nEs que hay algo en tu carita que me gusta\n\nQue me gusta Y se llevó mi corazón",
+    "createdAt": 1700000000000
+  },
+  {
+    "id": "song_276834505061_cdlc",
+    "title": "EL GRAN SEÑOR",
+    "artist": "CDLC",
+    "lyrics": "Desde que no tengo que cuidar tu cariño\n\nOír tus caprichos, ya no sufro tanto\n\nDesde que no tengo que cuidar tu cariño\n\nOír tus caprichos, ya no sufro\n\nAh ah, ahí va, él es el gran señor\n\nAhí va, es aquel que que está en aquel Rolls-Royce\n\nAhí va, mírenlo, que aire sobrador\n\nMira para acá solo porque está abrazado a vos\n\nDesde que no tengo que cuidar tu cariño…\n\nIntentó ser el amor que te haga olvidar\n\nIntentó, nunca lo logró ni lo logrará\n\nCompartió su riqueza para obviar\n\nUn poco de amor, lo que nunca vos le pudiste dar\n\nDesde que no tengo que cuidar tu cariño…\n\nMuere con la sonrisa.\n\nNo escribas el verano en la piel de mi mano\nPasa, sueña y escapa libre\nNunca seré primero, soy un viento extranjero\nQue también pasa y sueña libre\nPorque tus sueños te darán lo que la vida no te da\n\nPorque tus sueños te darán lo que la vida no te da\n\nDescolgate del cielo como lluvia de enero\nDale vida a la gente y siente\nAunque tú no lo veas mójale las ideas\nQue broten nuevos sueños siempre\nPorque tus sueños te darán lo que la vida no te da\n\nPorque tus sueños te darán lo que la vida no te da\n\nComo la luna que alumbra, por la noche los caminos\n\nComo las hojas al viento, como el sol espanta al frío.\n\nComo la tierra a la lluvia, como el mar espera al río,\n\nAsí espero tu regreso, a la tierra del olvido.\n\nTu tienes la llave de mi corazón, yo te quiero.\n\nMas que a mi vida por que sin tu amor, yo me muero.\n\nTu tienes la llave de mi corazón, yo te quiero.\n\nMas que a mi vida por que sin tu amor, yo me muero.\n\nComo naufragan mis miedos si navego en tu mirada,\n\nComo alerta mi sentido, con tu voz enamorada.\n\nCon tu sonrisa de niña como me mueves el alma\n\nComo me quitas el sueño, como me quitas la calma.\n\nTu tienes la llave de mi corazón, yo te quiero.\n\nMas que a mi vida por que sin tu amor, yo me muero.\n\nTu tienes la llave de mi corazón, yo te quiero.\n\nMas que a mi vida por que sin tu amor, yo me muero.",
+    "createdAt": 1700000000000
+  },
+  {
+    "id": "song_296442803206_cdlc",
+    "title": "EL POETA DICE LA VERDAD",
+    "artist": "CDLC",
+    "lyrics": "Quiero llorar mi pena y te lo digo\n\nPara que tu me quieras y me llores\n\nEn un anochecer de ruiseñores\n\nCon un puñal, con besos y contigo\n\nQuiero matar al único testigo\n\nPara el asesinato de mis flores\n\nY convertir mi llanto y mis sudores\n\nEn eterno montón de duro trigo\n\nQue no se acabe nunca la madeja\n\nDel te quiero me quieres, (siempre ardida)\n\nCon decrépito sol y luna vieja\n\nQuiero llorar mi pena y te lo digo\n\nPara que tu me quieras y me llores\n\nEn un anochecer de ruiseñores\n\nCon un puñal, con besos y contigo\n\nQuiero matar al único testigo\n\nPara el asesinato de mis flores\n\nY convertir mi llanto y mis sudores\n\nEn eterno montón de duro trigo\n\nQue no se acabe nunca la madeja\n\nDel te quiero me quieres\n\nCon decrépito sol y luna vieja\n\nQue no se acabe nunca la madeja\n\nDel te quiero me quieres\n\nCon decrépito sol y luna vieja\n\nQue lo que no me des y no te pida\n\nSerá para la muerte, que no deja\n\nNi sombra por la carne estremecida\n\nQue lo que no me des y no te pida\n\nSerá para la muerte, que no deja\n\nNi sombra por la carne estremecida\n\nQue lo que no me des y no te pida\n\nSerá para la muerte, que no deja\n\nNi sombra por la carne estremecida",
+    "createdAt": 1700000000000
+  },
+  {
+    "id": "song_158520377570_cdlc",
+    "title": "COMO LA FLOR",
+    "artist": "CDLC",
+    "lyrics": "Como la flor con tanto amor\n\nMe diste tú, se marchitó\n\nMe marcho hoy, yo sé perder\n\nPero, ah-ah-ay, ¡cómo me duele!\n\nAh-ah-ay, ¡cómo me duele!\n\nYo sé que tienes un nuevo amor\n\nSin embargo, te deseo lo mejor\n\nSi en mí encontraste felicidad\n\nTal vez, alguien más te la dará\n\nComo la flor con tanto amor\n\nMe diste tú, se marchitó\n\nMe marcho hoy, yo sé perder\n\nPero, ah-ah-ay, ¡cómo me duele!\n\nAh-ah-ay, ¡cómo me duele!\n\n\n\nSi vieras cómo duele perder tu amor\n\nCon tu adiós te llevas mi corazón\n\nNo sé si pueda volver a amar\n\nPorque te di todo el amor que pude dar\n\nComo la flor con tanto amor\n\nMe diste tú, se marchitó\n\nMe marcho hoy, yo sé perder\n\nPero, ah-ah-ay, ¡cómo me duele!\n\nAh-ah-ay, ¡cómo me duele!",
+    "createdAt": 1700000000000
+  },
+  {
+    "id": "song_540405040344_cdlc",
+    "title": "QUE NADIE SEPA MI SUFRIR",
+    "artist": "CDLC",
+    "lyrics": "No te asombres si te digo lo que fuiste\nUn ingrato con mi pobre corazón\nPorque el fuego de tus lindos ojos negros\nAlumbraron el camino de otro amor\n\nY pensar que te adoraba tiernamente\nQue a tu lado, como nunca, me sentí\nY, por esas cosas raras de la vida\nSin el beso de tu boca, yo me vi\n\nAmor de mis amores, vida mía, ¿qué me hiciste\nQue no puedo consolarme sin poderte contemplar?\nYa que pagaste mal a mi cariño tan sincero\nLo que conseguirás, que no te nombre nunca más\n\nAmor de mis amores, si dejaste de quererme\nNo hay cuidado, que la gente, de esto, no se va a enterar\n¿Qué gano con decir que un gran amor cambió mi suerte?\nSe burlarán de mí, que nadie sepa mi sufrir\n\nAmor de mis amores, vida mía, ¿qué me hiciste\nQue no puedo consolarme sin poderte contemplar?\nYa que pagaste mal a mi cariño tan sincero\nLo que conseguirás, que no te nombre nunca más\n\nAmor de mis amores, si dejaste de quererme\nNo hay cuidado, que la gente, de esto, no se va a enterar\n¿Qué gano con decir que un gran amor cambió mi suerte?\nSe burlarán de mí, que nadie sepa mi sufrir",
+    "createdAt": 1700000000000
+  },
+  {
+    "id": "song_453762594637_cdlc",
+    "title": "NO TE CREAS TAN IMPORTANTE",
+    "artist": "CDLC",
+    "lyrics": "Ya me contaron\n\nQue te estás hablando mal de mí\n\nY que te burlas\n\nPorque según ya lo notaste\n\nQue te ruego, vaya qué imaginación\n\nY ahora resulta\n\nNo te confundas\n\nYo no camino para atrás\n\nComo un cangrejo\n\nYo te conozco y sé que no vales ni un peso\n\nY de personas como tú\n\nYa no me dejo\n\nNo te creas tan importante\n\nYa no te pienso todo el día como antes\n\nSe me cerraron las heridas con alcohol\n\nY ni borracha volvería a buscarte\n\nPorque ya no siento amor\n\nNo te creas tan importante\n\nYa soy feliz, no tengo tiempo para odiarte\n\nYa no te extraño pues sin ti estoy mejor\n\nNo andes diciendo que me muero por mirarte\n\nEso ya se terminó\n\nNo te creas tan importante\n\nHasta cargo por favor\n\n\n\nNo te confundas\n\nYo no camino para atrás\n\nComo un cangrejo\n\nYa te conozco y sé que no vales ni un peso\n\nY de personas como tú\n\nYa no me dejo\n\nNo te creas tan importante\n\nYa no te pienso todo el día como antes\n\nSe me cerraron las heridas con alcohol\n\nY ni borracha volvería a buscarte\n\nPorque ya no siento amor\n\nNo te creas tan importante\n\nYa soy feliz, no tengo tiempo para odiarte\n\nYa no te extraño pues sin ti estoy mejor\n\nNo andes diciendo que me muero por mirarte\n\nEso ya se terminó",
+    "createdAt": 1700000000000
+  },
+  {
+    "id": "song_718726404176_cdlc",
+    "title": "TÚ SIN MÍ",
+    "artist": "CDLC",
+    "lyrics": "Es terrible percibir que te vas\nY no sabes el dolor\nQue has dejado justo en mí\n\nTe has llevado la ilusión\nDe que un día tú serás\nSolamente para mí\nOh, para mí\n\nY ahora estás tú sin mí\n¿Y qué hago con mi amor?\nEl que era para ti\n\nY con toda la ilusión\nDe que un día tú fueras\nSolamente para mí\nOh, para mí\n\nY ahora estás tú sin mí\n¿Y qué hago con mi amor?\nEl que era para ti\nY con toda la ilusión\nDe que un día tú fueras\nSolamente para mí\nOh, para mí\n\nMuchas cosas han pasado\nMucho tiempo\nFue la duda y el rencor\n\nQue despertamos al ver\nQue no nos queríamos\nNo, ya no, ya no nos queríamos\nOh, no\n\nHoy comprendo, puedo ver\nQue el amor que un día yo te di\n\nNo ha llenado tu interior\nY es por eso que te vas\n\nAlejándote de mí\nY sin mirar hacia atrás\nHacia atrás\n\nY ahora estás tú sin mí\n¿Y qué hago con mi amor?\nEl que era para ti\nY con toda la ilusión\nDe que un día tú fueras\nSolamente para mí\nOh, para mí\n\nY ahora estás tú sin mí\n¿Y qué hago con mi amor?\nEl que era para ti\nY con toda la ilusión\nDe que un día tú fueras\nSolamente para mí\nOh, para mí",
+    "createdAt": 1700000000000
+  },
+  {
+    "id": "song_786002806264_cdlc",
+    "title": "DONDE ESTÁN CORAZÓN",
+    "artist": "CDLC",
+    "lyrics": "¿A dónde fue el pasado que no volverá?\n\n¿A dónde fue tu risa que me hacía volar?\n\n¿Dónde quedó la llave de nuestra ilusión?\n\n¿A dónde la alegría de tu corazón?\n\nY se va, como todo se va\n\nComo el agua del río hacia el mar\n\nY se va, como todo se va\n\nEl tiempo que pasó y no supe ver\n\nLas horas que ya no quieren volver\n\n¿Dónde están, dónde están, corazón?\n\nLos días que sabíamos amar\n\nEl aire que llegaba desde el mar\n\n¿Dónde están, dónde están, corazón?\n\n¿A dónde fue tu cara de felicidad?\n\n¿Los besos que supimos una noche dar?\n\n¿Dónde quedo el pasado que no volverá?\n\n¿Y los días que vivimos en cualquier lugar?\n\nY se va, como todo se va\n\nComo el agua del río hacia el mar\n\nY se va, como todo se va\n\nEl tiempo que pasó y no supe ver\n\nLas horas que ya no quieren volver\n\n¿Dónde están, dónde están, corazón?\n\nLos días que sabíamos amar\n\nEl aire que llegaba desde el mar\n\n¿Dónde están, dónde están, corazón?\n\nEl tiempo que pasó y no supe ver\n\nLas horas que ya no quieren volver\n\n¿Dónde están, dónde están, corazón?\n\nLos días que sabíamos amar\n\nEl aire que llegaba desde el mar\n\n¿Dónde están, dónde están, corazón?",
+    "createdAt": 1700000000000
+  },
+  {
+    "id": "song_437736711013_cdlc",
+    "title": "UNA CERVEZA",
+    "artist": "CDLC",
+    "lyrics": "Porque vos, se nota que no me querés\nY yo me dedico al amor\n\nUna cerveza voy a tomar\nUna cerveza quiero tomar y así olvidarme\n\nDe aquella trampa\nDe aquella trampa mortal\n\nOtra cerveza voy a pedir\nOtra cerveza para brindar y no quedarme\n\nSin esperanzas\nSin esperanzas, tal vez\n\nPorque vos\nSe nota que no me querés\nSe nota que ya no hay amor\n\nEntonces, ya no hay más que hacer\nY yo me dedico al amor\nSe nota que no me querés\nSe nota que ya no hay amor\n\nEntonces, ya no hay más que hacer\nY yo me dedico al amor\nAmor, amor\n\nUna cerveza voy a tomar\nUna cerveza quiero tomar y así olvidarme\n\nDe aquella trampa\nDe aquella trampa mortal\n\nOtra cerveza voy a pedir\nOtra cerveza para brindar y no quedarme\n\nSin esperanzas\nSin esperanzas, tal vez\n\nPorque vos\nSe nota que no me querés\nSe nota que ya no hay amor\n\nEntonces, ya no hay más que hacer\nY yo me dedico al amor\n\nSe nota que no me querés\nSe nota que ya no hay amor\n\nEntonces, ya no hay más que hacer\nY yo me dedico al amor\nAmor, amor\n\nPorque vos\nSe nota que no me querés\nSe nota que ya no hay amor\nEntonces, ya no hay más que hacer\n\nY yo me dedico al amor\nSe nota que no me querés\nSe nota que ya no hay amor\n\nEntonces, ya no hay más que hacer\nY yo me dedico al amor\nAmor, amor\n\nPorque vos\nSe nota que no me querés\nSe nota que ya no hay amor\n\nEntonces, ya no hay más que hacer\nY yo me dedico al amor\n\nSe nota que no me querés\nSe nota que ya no hay amor\n\nEntonces, ya no hay más que hacer\nY yo me dedico al amor\nAmor, amor, amor",
+    "createdAt": 1700000000000
+  },
+  {
+    "id": "song_101344703901_cdlc",
+    "title": "LO MEJOR DEL AMOR",
+    "artist": "CDLC",
+    "lyrics": "Él pasa a verla a las 6:00\n\nComo acordaron ayer\n\nSe desespera porque\n\nEl miedo ronda otra vez\n\nY de nuevo en ese cuarto se desnudan piel a piel\n\nSe desgarran y se entregan a las ganas y al placer\n\nAman y odian al destino que unió sus dos caminos\n\nY después de lo prohibido cada uno a su hogar\n\nFue lo mejor del amor\n\nLo que he vivido contigo\n\nDejo mi esposa, vos dejás tu marido\n\nPara matarnos en un cuarto de hotel\n\nNunca me dejes, mi amor\n\nMe dice suave al oído\n\n¿Cómo dejarte?, si te llevo conmigo\n\nNunca he podido arrancar tu corazón de mi corazón\n\nHasta el domingo, mi amor\n\nTal vez volvamos a vernos\n\n¿Cómo arrancarte de mi vida?, no puedo\n\nNunca he podido alejarme de ti\n\nYa no te vayas, mi amor\n\nLe pide ella por favor\n\nY no le importa si ya\n\nLa esperará su marido\n\nY de nuevo en ese cuarto se desnudan piel a piel\n\nSe desgarran y se entregan a las ganas y al placer\n\nAman y odian al destino que unió sus dos caminos\n\nY después de lo prohibido cada uno a su hogar\n\nFue lo mejor del amor\n\nLo que he vivido contigo\n\nDejo mi esposa, vos dejás tu marido\n\nPara matarnos en un cuarto de hotel\n\nNunca me dejes, mi amor\n\nMe dice suave, al oído\n\n¿Cómo dejarte?, si te llevo conmigo\n\nNunca he podido arrancar tu corazón de mi corazón\n\nHasta el domingo, mi amor\n\nTal vez volvamos a vernos\n\n¿Cómo arrancarte de mi vida?, no puedo\n\nNunca he podido alejarme de ti",
+    "createdAt": 1700000000000
+  }
+];
+
 function loadData() {
   try {
     const raw = localStorage.getItem('tp_db');
     if (raw) db = JSON.parse(raw);
     if (!db.songs) db.songs = [];
   } catch(e) { db = { songs: [] }; }
+
+  // Seed: si no hay canciones, cargar las pre-cargadas
+  if (db.songs.length === 0) {
+    db.songs = JSON.parse(JSON.stringify(PRELOADED_SONGS));
+    saveData();
+  }
 
   try {
     const cfg = localStorage.getItem('tp_config');
