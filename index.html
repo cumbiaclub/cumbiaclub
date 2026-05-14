@@ -681,9 +681,12 @@
   .teleprompter-scroll::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
 
   .teleprompter-content {
-    padding: 20px 40px;
+    padding: 20px clamp(40px, 10vw, 160px);
     padding-bottom: 60vh;
     min-height: 101%;
+    text-align: center;
+    max-width: 1200px;
+    margin: 0 auto;
   }
 
   .song-block {
@@ -708,10 +711,12 @@
   .lyrics-line {
     font-size: var(--lyrics-size, 36px);
     line-height: 1.5;
-    color: var(--text);
+    color: #fff;
     white-space: pre-wrap;
-    font-family: var(--font-mono);
-    letter-spacing: 0.5px;
+    font-family: var(--font-ui);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
     transition: font-size 0.2s;
   }
 
@@ -989,8 +994,8 @@
 
   <!-- ═══════════════ INICIO ═══════════════ -->
   <div id="screen-home" class="screen active">
-    <div class="home-logo">PROMPT</div>
-    <div class="home-sub">CUMBIA CLUB</div>
+    <div class="home-logo">CUMBIA CLUB</div>
+    <div class="home-sub">TELEPROMPTER</div>
     <div class="home-cards">
       <div class="home-card" onclick="goto('screen-setlist')">
         <div class="home-card-icon">📋</div>
@@ -1381,10 +1386,6 @@ let ablesetConnected = false;
 let currentAblesetSong = null;
 
 // ═══════════════════════════════════════════════════════════════
-// PERSISTENCIA
-// ═══════════════════════════════════════════════════════════════
-
-// ═══════════════════════════════════════════════════════════════
 // CANCIONES PRE-CARGADAS
 // ═══════════════════════════════════════════════════════════════
 const PRELOADED_SONGS = [
@@ -1529,6 +1530,10 @@ const PRELOADED_SONGS = [
     "createdAt": 1700000000000
   }
 ];
+
+// ═══════════════════════════════════════════════════════════════
+// PERSISTENCIA
+// ═══════════════════════════════════════════════════════════════
 
 function loadData() {
   try {
@@ -1793,33 +1798,37 @@ function buildTeleprompterRoll() {
 
   document.documentElement.style.setProperty('--lyrics-size', fontSize + 'px');
 
-  // Observar qué bloque entra en pantalla mientras se scrollea
+  // Detectar qué canción está visible mientras se scrollea
   if (songObserver) songObserver.disconnect();
-  songObserver = new IntersectionObserver(entries => {
-    // Encontrar el bloque más visible (mayor intersectionRatio)
-    let best = null;
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        if (!best || entry.intersectionRatio > best.intersectionRatio) {
-          best = entry;
-        }
+
+  const scrollHandler = () => {
+    const blocks = document.querySelectorAll('.song-block');
+    const scrollTop = scrollEl.scrollTop;
+    const viewportMid = scrollEl.clientHeight * 0.35;
+
+    let closestIdx = 0;
+    let closestDist = Infinity;
+
+    blocks.forEach(block => {
+      const blockTop = block.offsetTop - scrollTop;
+      const dist = Math.abs(blockTop - viewportMid);
+      if (dist < closestDist) {
+        closestDist = dist;
+        closestIdx = parseInt(block.dataset.idx);
       }
     });
-    if (best) {
-      const idx = parseInt(best.target.dataset.idx);
-      if (!isNaN(idx) && idx !== currentSongIndex) {
-        currentSongIndex = idx;
-        updateShowHeader();
-      }
-    }
-  }, {
-    root: scrollEl,
-    threshold: [0.1, 0.3, 0.5, 0.7, 0.9]
-  });
 
-  document.querySelectorAll('.song-block').forEach(block => {
-    songObserver.observe(block);
-  });
+    if (!isNaN(closestIdx) && closestIdx !== currentSongIndex) {
+      currentSongIndex = closestIdx;
+      updateShowHeader();
+    }
+  };
+
+  if (scrollEl._songScrollHandler) {
+    scrollEl.removeEventListener('scroll', scrollEl._songScrollHandler);
+  }
+  scrollEl._songScrollHandler = scrollHandler;
+  scrollEl.addEventListener('scroll', scrollHandler, { passive: true });
 }
 
 function formatLyricsHTML(lyrics) {
@@ -1844,6 +1853,10 @@ function scrollToSong(idx) {
 function scrollToTop() {
   const scrollEl = document.getElementById('teleprompter-scroll');
   scrollEl.scrollTo({ top: 0, behavior: 'smooth' });
+  if (showMode === 'manual' && currentSongIndex !== 0) {
+    currentSongIndex = 0;
+    updateShowHeader();
+  }
 }
 
 function nextSong() {
@@ -1898,6 +1911,12 @@ function showUI() {
 
 function hideUI() {
   // No se usa más, pero se mantiene para no romper referencias
+}
+
+function stopAutoScroll() {
+  // Auto-scroll eliminado — se mantiene para compatibilidad con Ableset
+  clearInterval(scrollInterval);
+  autoScrolling = false;
 }
 
 function toggleUI() {
