@@ -1297,7 +1297,7 @@
 
 const SUPABASE_URL = 'https://lonulrwxioeonxgsiqjn.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_9Bq8Bp_79vblMUnLkmE-Bw_V1RFB9tZ';
-const sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let supabaseOnline = false;
 
