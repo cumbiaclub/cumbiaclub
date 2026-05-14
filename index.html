@@ -1297,7 +1297,7 @@
 
 const SUPABASE_URL = 'https://lonulrwxioeonxgsiqjn.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_9Bq8Bp_79vblMUnLkmE-Bw_V1RFB9tZ';
-const supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_KEY);
+const sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let supabaseOnline = false;
 
@@ -1305,7 +1305,7 @@ async function syncFromSupabase() {
   const statusEl = document.getElementById('sync-status');
   if (statusEl) statusEl.textContent = '↻ sincronizando...';
   try {
-    const { data, error } = await supabase.from('songs').select('*').order('created_at', { ascending: true });
+    const { data, error } = await sbClient.from('songs').select('*').order('created_at', { ascending: true });
     if (error) throw error;
     if (data && data.length > 0) {
       db.songs = data.map(s => ({
@@ -1331,7 +1331,7 @@ async function syncFromSupabase() {
 async function pushSongToSupabase(song) {
   if (!supabaseOnline) return;
   try {
-    await supabase.from('songs').upsert({
+    await sbClient.from('songs').upsert({
       id: song.id,
       title: song.title,
       artist: song.artist || '',
@@ -1346,7 +1346,7 @@ async function pushSongToSupabase(song) {
 async function deleteSongFromSupabase(songId) {
   if (!supabaseOnline) return;
   try {
-    await supabase.from('songs').delete().eq('id', songId);
+    await sbClient.from('songs').delete().eq('id', songId);
   } catch(e) {
     console.warn('[SUPABASE] Error al eliminar canción:', e.message);
   }
